@@ -9,7 +9,8 @@
     "plaque" : "BM-919-XQ",
     "Date d'achat" : "15-08-2022",
     "Prix d'achat" : 80000,
-    "image" : "https://media.discordapp.net/attachments/897479285026222110/1009438075115548782/machE.png"
+    "image" : "https://media.discordapp.net/attachments/897479285026222110/1009438075115548782/machE.png",
+    "description" : "Le 6m3 (type Fiat Scudo ou similiare) est recommandé pour le transport d'objets et de cartons de grande taille. Ce petit utilitaire confortable et fonctionnel, permet aux particuliers et professionnels de transporter leur matériel facilement. Egalement adapté pour le déménagement de gros meubles."
   },
   {
     "id" : "2322fd0020aaf0146b16250c9d11cec60821572161c05de0cc3b83714d3d6d4c",
@@ -21,7 +22,8 @@
     "plaque" : "DD-707-NA",
     "Date d'achat" : "11-08-2022",
     "Prix d'achat" : 50000,
-    "image" : "https://media.discordapp.net/attachments/897479285026222110/1009438506646507550/audiQ4.png"
+    "image" : "https://media.discordapp.net/attachments/897479285026222110/1009438506646507550/audiQ4.png",
+    "description": "Le 6m3 (type Fiat Scudo ou similiare) est recommandé pour le transport d'objets et de cartons de grande taille. Ce petit utilitaire confortable et fonctionnel, permet aux particuliers et professionnels de transporter leur matériel facilement. Egalement adapté pour le déménagement de gros meubles."
   },
   {
     "id" : "2322fd0020aaf0146b16250c9d11cec60821572161c05de0cc3b83714d3d6d4c",
@@ -33,6 +35,7 @@
     "plaque" : "BM-919-XQ",
     "Date d'achat" : "15-08-2022",
     "Prix d'achat" : 80000,
-    "image" : "https://media.discordapp.net/attachments/897479285026222110/1009438075115548782/machE.png"
+    "image" : "https://media.discordapp.net/attachments/897479285026222110/1009438075115548782/machE.png",
+    "description" : "Le 6m3 (type Fiat Scudo ou similiare) est recommandé pour le transport d'objets et de cartons de grande taille. Ce petit utilitaire confortable et fonctionnel, permet aux particuliers et professionnels de transporter leur matériel facilement. Egalement adapté pour le déménagement de gros meubles."
   }
 ]

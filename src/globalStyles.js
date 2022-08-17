@@ -10,6 +10,7 @@ const GlobalStyle = createGlobalStyle`
   h5, h4, h3, h2, h1 {
     margin: 0;
     font-family: Inter;
+    font-weight: normal;
   }
 `;
 

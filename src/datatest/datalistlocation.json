@@ -1,0 +1,38 @@
+[
+  {
+    "id" : "2322fd0020aaf0146b16250c9d11cec60821572161c05de0cc3b83714d3d6d4c",
+    "marque" : "Ford Mustang",
+    "model" : "Mach-e",
+    "type" :  "voiture",
+    "numéro de série" : 131328865892328,
+    "couleur" : "noire",
+    "plaque" : "BM-919-XQ",
+    "Date d'achat" : "15-08-2022",
+    "Prix d'achat" : 80000,
+    "image" : "https://media.discordapp.net/attachments/897479285026222110/1009438075115548782/machE.png"
+  },
+  {
+    "id" : "2322fd0020aaf0146b16250c9d11cec60821572161c05de0cc3b83714d3d6d4c",
+    "marque" : "Audi",
+    "model" : "Q4 e-tron",
+    "type" :  "voiture",
+    "numéro de série" : 13132885951414,
+    "couleur" : "bleu métallique",
+    "plaque" : "DD-707-NA",
+    "Date d'achat" : "11-08-2022",
+    "Prix d'achat" : 50000,
+    "image" : "https://media.discordapp.net/attachments/897479285026222110/1009438506646507550/audiQ4.png"
+  },
+  {
+    "id" : "2322fd0020aaf0146b16250c9d11cec60821572161c05de0cc3b83714d3d6d4c",
+    "marque" : "Ford Mustang",
+    "model" : "Mach-e",
+    "type" :  "voiture",
+    "numéro de série" : 131328865892328,
+    "couleur" : "noire",
+    "plaque" : "BM-919-XQ",
+    "Date d'achat" : "15-08-2022",
+    "Prix d'achat" : 80000,
+    "image" : "https://media.discordapp.net/attachments/897479285026222110/1009438075115548782/machE.png"
+  }
+]

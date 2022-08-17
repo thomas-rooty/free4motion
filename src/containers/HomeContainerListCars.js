@@ -19,7 +19,7 @@ const HomeContainerListCars = () => {
                             {
                                 myData.map(
                                     element =>
-                                        <BoxCar image={element.image} marque={element.marque} model={element.model} id={element.id}/>
+                                        <BoxCar image={element.image} marque={element.marque} model={element.model} id={element.id} description={element.description}/>
                                 )
                             }
                         </div>

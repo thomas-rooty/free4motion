@@ -2,21 +2,6 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Contexte
-
-La société Free4Motion vous sollicite, par le biais d’un appel d’offres, afin de réaliser la refonte
-complète de son Système d’Information. Ce dernier repose sur une infrastructure informatique
-complète, ainsi que sur différents développements de logiciels préexistants qui ne seront plus
-maintenus (les technologies utilisées étant trop anciennes).
-
-Free4Motion est un loueur de scooters et voitures électriques basé à Paris et Lyon. L’entreprise
-réalise un CA de 15 M€, emploie 50 personnes dans ses différents services, et s’appuie sur un réseau
-de revendeurs répartis sur l’ensemble du territoire français.
-
-Ses bureaux sont à Paris, où se situe son siège social, et à Lyon où une succursale démarre son
-activité.
-
-
 ## Available Scripts
 
 In the project directory, you can run:

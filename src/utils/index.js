@@ -15,9 +15,12 @@ export const formatDateToDateTime = (date) => {
     const strTime = hours + ":" + minutes
 
     const years = date.getFullYear()
-    const month = date.getMonth() > 9 ? date.getMonth() : `0${date.getMonth()}`
+    const month = date.getMonth() + 1 > 9 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`
     const days = date.getDate() > 9 ? date.getDate() : `0${date.getDate()}`
 
     const result = `${years}-${month}-${days}T${strTime}`
     return result
 }
+
+export const priceByKm = 0.22
+export const priceByDays = 42.00

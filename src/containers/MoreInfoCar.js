@@ -1,8 +1,8 @@
-import {useLocation} from "react-router-dom";
+import {useLocation, Link} from "react-router-dom";
 import {StandarContainers} from "./Containers";
-import {Input, InputLabel, MenuItem, Select, TextField} from "@mui/material";
-import {useState} from "react";
-import {formatDateToDateTime} from '../utils'
+import {Input, InputLabel, MenuItem, Select} from "@mui/material";
+import {useEffect, useState} from "react";
+import {formatDateToDateTime, priceByKm, priceByDays} from '../utils'
 import {ButtonReservation} from "../components";
 
 
@@ -10,45 +10,80 @@ import {ButtonReservation} from "../components";
 const MoreInfoCar = () => {
 
     const location = useLocation()
-    const {id, img, description} = location.state
+    const {image,marque,model,id,description} = location.state
 
-    const defaultPrice = 32.00
 
 
     const myDate = new Date()
+    const {userAgent} = navigator
+
+    console.log(priceByDays, priceByKm)
+
+    const currentUserAgent = !!userAgent.match(/firefox|fxios/i)
 
     const [pointRetrait, setPointRetrait] = useState("paris")
     const [startDate, setStartDate ] = useState(formatDateToDateTime(myDate))
     const [endDate, setEndDate] = useState(formatDateToDateTime(myDate))
     const [killometers, setKillometers] = useState(100)
-    const [price, setPrice] = useState(defaultPrice + killometers * 0.32)
+    const [price, setPrice] = useState(0)
+
+    useEffect(() => {
+
+        let nbr;
+        if (startDate === endDate) {
+            nbr = 1
+        } else {
+            const timeStampStart = new Date(startDate.replaceAll("-"," ").replace("T", " ")).getTime()
+            const timeStampEnd = new Date(endDate.replaceAll("-"," ").replace("T", " ")).getTime()
+
+            const differenceTimeStamp = timeStampEnd - timeStampStart
+            nbr = Math.ceil(differenceTimeStamp / (1000 * 3600 * 24)) + 1
+        }
+        const priceDays = nbr * priceByDays
+        const priceKms = killometers * priceByKm
+        setPrice(priceDays + priceKms)
+
+    }, [startDate, endDate, killometers])
 
     const handleChangePointRetrait = (e) => {
         setPointRetrait(e.target.value)
     }
     const handleChangeKm = (e) => {
         setKillometers(e.target.value)
-        setPrice(defaultPrice + e.target.value * 0.32)
-    }
-    const handleChangeStartDate = (e) => {
-        const timestamp = new Date(e.target.value.replaceAll("-"," ").replace("T", " ")).getTime()
-        if (timestamp > myDate.getTime()) {
-            setStartDate(e.target.value)
-        }
-    }
-    const handleChangeEndDate = (e) => {
-        const timestamp = new Date(e.target.value.replaceAll("-"," ").replace("T", " ")).getTime()
-        if (timestamp > myDate.getTime()) {
-            setEndDate(e.target.value)
-        }
-
     }
 
+
+    const handleChangeStartDate = (e, params) => {
+
+        if (currentUserAgent && params) {
+            if (params === "days") {
+                setStartDate(e.target.value + "T" + startDate.split("T")[1])
+            } else if (params === "hours"){
+                setStartDate(startDate.split("T")[0] + "T" + e.target.value)
+            }
+            return
+        }
+        setStartDate(e.target.value)
+
+    }
+    const handleChangeEndDate = (e, params) => {
+
+        if (currentUserAgent && params) {
+            if (params === "days") {
+                setEndDate(e.target.value + "T" + startDate.split("T")[1])
+            } else if (params === "hours"){
+                setEndDate(startDate.split("T")[0] + "T" + e.target.value)
+            }
+            return
+        }
+        setEndDate(e.target.value)
+
+    }
 
     return(
         <div style={{marginTop : "46px"}}>
             <div style={{width : "250px", height : "115px", marginLeft : "auto", marginRight : "auto"}}>
-                <img src={img} style={{width : "100%", height : "100%"}}/>
+                <img src={image} style={{width : "100%", height : "100%"}} alt="voiture récap"/>
             </div>
             <StandarContainers>
                 <div style={{marginTop : "48px"}}>
@@ -84,19 +119,54 @@ const MoreInfoCar = () => {
                     </div>
                     <div style={{marginTop : "32px"}}>
                         <label htmlFor="form-input-date-start" style={{color : "#747474", display: "block"}}>Date début</label>
-                        <Input id="form-input-date-start" type="datetime-local" sx={{
-                            color : "white",
-                            colorScheme: "dark",
-                            ':after': { borderBottomColor: '#44C034' },
-                        }} value={startDate} onChange={(e) => handleChangeStartDate(e)}/>
+                        {
+                            currentUserAgent
+                                ?
+                                <div>
+
+                                    <Input id="form-input-date-start" type="date" sx={{
+                                        color : "white",
+                                        colorScheme: "dark",
+                                        ':after': { borderBottomColor: '#44C034' },
+                                    }} value={startDate.split("T")[0]} inputProps={{min : formatDateToDateTime(myDate).split('T')[0]}} onChange={(e) => handleChangeStartDate(e, "days")}/>
+                                    <Input id="form-input-times-start" type="time" sx={{
+                                        color : "white",
+                                        colorScheme: "dark",
+                                        ':after': { borderBottomColor: '#44C034' },
+                                    }} value={startDate.split("T")[1]}  onChange={(e) => handleChangeStartDate(e, "hours")}/>
+                                </div>
+                                :
+                                <Input id="form-input-date-start" type="datetime-local" sx={{
+                                    color : "white",
+                                    colorScheme: "dark",
+                                    ':after': { borderBottomColor: '#44C034' },
+                                }} value={startDate}  inputProps={{min : formatDateToDateTime(myDate)}} onChange={(e) => handleChangeStartDate(e)}/>
+                        }
                     </div>
                     <div style={{marginTop : "32px"}}>
                         <label htmlFor="form-input-date-end" style={{color : "#747474", display: "block"}}>Date fin</label>
-                        <Input id="form-input-date-end"  type="datetime-local" sx={{
-                            color : "white",
-                            colorScheme: "dark",
-                            ':after': { borderBottomColor: '#44C034' },
-                        }} value={endDate} onChange={(e) => handleChangeEndDate(e)}/>
+                        {
+                            currentUserAgent
+                                ?
+                                <div>
+                                    <Input id="form-input-date-end" type="date" sx={{
+                                        color : "white",
+                                        colorScheme: "dark",
+                                        ':after': { borderBottomColor: '#44C034' },
+                                    }} inputProps={{min : formatDateToDateTime(myDate).split('T')[0]}} value={endDate.split("T")[0]} onChange={(e) => handleChangeEndDate(e, "days")}/>
+                                    <Input id="form-input-times-end" type="time" sx={{
+                                        color : "white",
+                                        colorScheme: "dark",
+                                        ':after': { borderBottomColor: '#44C034' },
+                                    }} value={endDate.split("T")[1]} onChange={(e) => handleChangeEndDate(e, "hours")}/>
+                                </div>
+                                :
+                                <Input id="form-input-date-end"  type="datetime-local" inputProps={{min : formatDateToDateTime(myDate)}} sx={{
+                                    color : "white",
+                                    colorScheme: "dark",
+                                    ':after': { borderBottomColor: '#44C034' },
+                                }} value={endDate} onChange={(e) => handleChangeEndDate(e)}/>
+                        }
                     </div>
                     <div style={{marginTop : "32px"}}>
                         <label htmlFor="form-input-km" style={{color : "#747474", display: "block"}}>Distance</label>
@@ -109,16 +179,13 @@ const MoreInfoCar = () => {
                 </div>
                 <div style={{marginTop : "32px"}}>
                     <div>
-                        <h2 style={{color : "white"}}>{`${price.toFixed(2).toString()}€`}</h2>
+                        <h2 style={{color : "white"}}>{`${price.toFixed(2).toString()}€ TTC`}</h2>
                     </div>
                     <div style={{marginTop : "16px", marginBottom : "16px"}}>
-                        <ButtonReservation height={40}/>
+                        <Link to="/validation_commande" state={{...{pointRetrait,startDate,endDate,killometers,price}, ...location.state}}><ButtonReservation height={40} msg="Continuer"/></Link>
                     </div>
                 </div>
-
             </StandarContainers>
-
-
 
         </div>
     )

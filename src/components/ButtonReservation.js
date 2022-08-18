@@ -9,9 +9,9 @@ const CustomButton = styled.button`
 `;
 
 
-const ButtonReservation = ({height}) => {
+const ButtonReservation = ({height, msg}) => {
     return (
-        <CustomButton height={height}>Réserver</CustomButton>
+        <CustomButton height={height}>{msg || "Réserver"}</CustomButton>
     )
 }
 export default ButtonReservation

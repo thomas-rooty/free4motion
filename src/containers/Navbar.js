@@ -3,6 +3,7 @@ import {StandarContainers} from "./Containers";
 import Logo4Motion from '../img/logo2.png'
 import {Hamburger} from "../components";
 import {Link} from "react-router-dom";
+import {useContextMenu} from "../context/ContextMenu";
 
 const DivNavbar = styled.div`
     width: 100%;
@@ -15,11 +16,13 @@ const DivNavbar = styled.div`
 `;
 
 const Navbar = () => {
+
+    const {setIsOpen, isOpen} = useContextMenu()
     return(
         <DivNavbar>
             <StandarContainers flex={true} justifyContent="space-between">
                 <div><Link to="/"><img src={Logo4Motion} style={{ width : "128px"}}/></Link></div>
-                <Hamburger/>
+                <div onClick={() => setIsOpen(!isOpen)}><Hamburger/></div>
             </StandarContainers>
         </DivNavbar>
     )

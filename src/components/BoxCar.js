@@ -23,7 +23,7 @@ const BoxCar = ({image, marque, model,id, description}) => {
                 <h5 style={{color : "#747474"}}>{model}</h5>
             </div>
             <div style={{marginTop : "12px", width : "100px", marginLeft : "auto", marginRight : "auto"}}>
-                <Link to={`/${slugify(marque + "-" + model)}`} state={{"id" : id, "img" : image, "description" : description}}><ButtonReservation/></Link>
+                <Link to={`/${slugify(marque + "-" + model)}`} state={{image,marque,model,id,description}}><ButtonReservation/></Link>
             </div>
         </ContainerBoxCar>
 

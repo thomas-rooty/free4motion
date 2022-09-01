@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import React from "react";
 import SearchIcon from '../img/search_icon.png'
+import {useContextHomePage} from "../context/ContexHomePage";
+
 
 const SearchInputContainer = styled.input`
   padding-left: 24px;
@@ -34,10 +36,13 @@ const IconButton = styled.button`
 
 const SearchBar = () => {
 
+
+    const {handleChangeSearch} = useContextHomePage()
+
     return(
         <React.Fragment>
             <ContainerSearch>
-                <SearchInputContainer/>
+                <SearchInputContainer onChange={(e) => handleChangeSearch(e.target.value)}/>
                 <IconButton>
                     <img src={SearchIcon} style={{width : "24px"}}/>
                 </IconButton>

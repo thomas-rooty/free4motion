@@ -23,7 +23,8 @@ const ListDropdownNav = () => {
         <div style={{color : "white"}}>
             <CustomUl>
                 <Link to="/my-orders"><li>Mes commandes</li></Link>
-                <li>Se déconnecter</li>
+                <Link to="/free_admin"><li>Back-office</li></Link>
+                <Link to="/logout"><li>Se déconnecter</li></Link>
             </CustomUl>
         </div>
     )

@@ -47,6 +47,7 @@ const HomeContainerListCars = () => {
     const carLyon = data.filter(element => element.type === "car" && element.agence === "2" || element.agence === "3")
     const trotiLyon = data.filter(element => element.type === "trottinette" && element.agence === "2" || element.agence === "3")
 
+
     return(
         <ContainerHomePage>
             {
@@ -60,7 +61,7 @@ const HomeContainerListCars = () => {
                         {
                             carParis.map(
                                 element =>
-                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.brand} modele={element.modele} id={element.id} description={element.description}/>
+                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.brand} modele={element.modele} id={element.id} description={element.description} agence={element.agence}/>
                             )
                         }
                     </div>
@@ -77,7 +78,7 @@ const HomeContainerListCars = () => {
                         {
                             trotiParis.map(
                                 element =>
-                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.brand} modele={element.modele} id={element.id} description={element.description}/>
+                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.brand} modele={element.modele} id={element.id} description={element.description} agence={element.agence}/>
                             )
                         }
                     </div>
@@ -94,7 +95,7 @@ const HomeContainerListCars = () => {
                         {
                             carLyon.map(
                                 element =>
-                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.brand} modele={element.modele} id={element.id} description={element.description}/>
+                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.brand} modele={element.modele} id={element.id} description={element.description} agence={element.agence}/>
                             )
                         }
                     </div>
@@ -111,7 +112,7 @@ const HomeContainerListCars = () => {
                         {
                             trotiLyon.map(
                                 element =>
-                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.brand} modele={element.modele} id={element.id} description={element.description}/>
+                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.brand} modele={element.modele} id={element.id} description={element.description} agence={element.agence}/>
                             )
                         }
                     </div>

@@ -11,7 +11,7 @@ const ContainerBoxCar = styled.div`
 `;
 
 
-const BoxCar = ({image, marque, modele,id, description, plaque}) => {
+const BoxCar = ({image, marque, modele,id, description, plaque, agence}) => {
 
     return(
         <ContainerBoxCar>
@@ -29,7 +29,7 @@ const BoxCar = ({image, marque, modele,id, description, plaque}) => {
                 {
                     plaque
                     ? <Link to="/free_admin/add_location" state={{id, image}}><ButtonReservation msg="Ajouter location"/></Link>
-                        : <Link to={`/${slugify(marque + "-" + modele)}`} state={{image,marque,modele,id,description}}><ButtonReservation/></Link>
+                        : <Link to={`/${slugify(marque + "-" + modele)}`} state={{image,marque,modele,id,description,agence}}><ButtonReservation/></Link>
                 }
 
             </div>

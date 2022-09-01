@@ -1,22 +1,27 @@
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
+
 import {StandarContainers} from "./Containers";
 
 import LocalistaionWhite from '../img/locationWhite.png'
 import CalendarWhite from '../img/calendarWhite.png';
-import DistanceWhite from '../img/distanceWhite.png'
+import DistanceWhite from '../img/distanceWhite.png';
+import ChevronBackWhite from '../img/backWhite.png'
 import {ButtonReservation} from "../components";
-
-
+import {Link} from "react-router-dom";
 
 
 const RecapCommande = () => {
 
     const location = useLocation()
+    const navigate = useNavigate()
     const {endDate,id,image,killometers,pointRetrait,startDate,price} = location.state
 
     return (
         <div style={{textAlign : "center", marginTop : "32px"}}>
-            <h2 style={{color : "white"}}>Récapitulatif commande</h2>
+            <div style={{display : "flex", justifyContent : "center", alignItems : "center"}}>
+                <img onClick={() => navigate(-1, {"previousData" : {endDate, pointRetrait, startDate, killometers}})} src={ChevronBackWhite} alt="retour arrière"/>
+                <h2 style={{color : "white"}}>Récapitulatif commande</h2>
+            </div>
             <div style={{marginTop : "32px" , width : "80%", marginLeft : "auto", marginRight : "auto", minHeight : "500px", backgroundColor : "#10111E"}}>
                 <div style={{marginTop : "16px"}}>
                     <img src={image} alt="votre voiture" style={{width : "80%", height : "80%", marginTop : "16px"}}/>
@@ -59,7 +64,7 @@ const RecapCommande = () => {
                     </h5>
                 </div>
                 <div style={{marginTop : "32px", width : "80%", marginLeft : "auto", marginRight : "auto"}}>
-                    <ButtonReservation height={30} msg={`Payer - ${price} €`} />
+                    <Link to="/payment"><ButtonReservation height={30} msg={`Payer - ${price} €`} /></Link>
                 </div>
 
             </div>

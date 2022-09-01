@@ -12,12 +12,9 @@ const MoreInfoCar = () => {
     const location = useLocation()
     const {image,marque,model,id,description} = location.state
 
-
-
     const myDate = new Date()
     const {userAgent} = navigator
 
-    console.log(priceByDays, priceByKm)
 
     const currentUserAgent = !!userAgent.match(/firefox|fxios/i)
 
@@ -26,6 +23,15 @@ const MoreInfoCar = () => {
     const [endDate, setEndDate] = useState(formatDateToDateTime(myDate))
     const [killometers, setKillometers] = useState(100)
     const [price, setPrice] = useState(0)
+
+    useEffect(() => {
+        if (new Date(startDate.replaceAll("-"," ").replace("T", " ")).getTime() > new Date(endDate.replaceAll("-"," ").replace("T", " ")).getTime()) {
+            setEndDate(startDate)
+        }
+
+    }, [startDate])
+
+
 
     useEffect(() => {
 
@@ -66,6 +72,12 @@ const MoreInfoCar = () => {
         setStartDate(e.target.value)
 
     }
+
+    const handleVerifEndDate = () => {
+        if (new Date(startDate.replaceAll("-"," ").replace("T", " ")).getTime() > new Date(endDate.replaceAll("-"," ").replace("T", " ")).getTime()) {
+            setEndDate(startDate)
+        }
+    }
     const handleChangeEndDate = (e, params) => {
 
         if (currentUserAgent && params) {
@@ -92,7 +104,7 @@ const MoreInfoCar = () => {
                 <div style={{marginTop : "16px"}}>
                     <h5 style={{color : "#747474"}}>{description}</h5>
                 </div>
-                <div style={{width : "320px", display : "flex", justifyContent : "space-around", flexFlow : "row wrap"}}>
+                <div style={{display : "flex", justifyContent : "space-around", flexFlow : "row wrap"}}>
                     <div style={{marginTop : "32px"}}>
                         <InputLabel id="select-point-retrait-label" style={{color : "#747474", fontFamily : "Inter"}}>Votre point de retrait</InputLabel>
                         <Select
@@ -153,7 +165,7 @@ const MoreInfoCar = () => {
                                         color : "white",
                                         colorScheme: "dark",
                                         ':after': { borderBottomColor: '#44C034' },
-                                    }} inputProps={{min : formatDateToDateTime(myDate).split('T')[0]}} value={endDate.split("T")[0]} onChange={(e) => handleChangeEndDate(e, "days")}/>
+                                    }} inputProps={{min : startDate.split('T')[0]}} value={endDate.split("T")[0]} onChange={(e) => handleChangeEndDate(e, "days")}/>
                                     <Input id="form-input-times-end" type="time" sx={{
                                         color : "white",
                                         colorScheme: "dark",
@@ -161,7 +173,7 @@ const MoreInfoCar = () => {
                                     }} value={endDate.split("T")[1]} onChange={(e) => handleChangeEndDate(e, "hours")}/>
                                 </div>
                                 :
-                                <Input id="form-input-date-end"  type="datetime-local" inputProps={{min : formatDateToDateTime(myDate)}} sx={{
+                                <Input id="form-input-date-end"  type="datetime-local" onBlur={() => handleVerifEndDate()} inputProps={{min : startDate }} sx={{
                                     color : "white",
                                     colorScheme: "dark",
                                     ':after': { borderBottomColor: '#44C034' },

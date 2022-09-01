@@ -1,0 +1,26 @@
+[
+  {
+    "idContrat" : "303dd68905d248177d2196f6161bc39fafefac593c5a3bd05a62631aee8a96e9",
+    "idVehicle" : "2322fd0020aaf0146b16250c9d11cec60821572161c05de0cc3b83714d3d6d4c",
+    "idPersonne" : "",
+    "dateDebut" : "2022-08-20 07:00",
+    "dateFin" : "2022-08-21 18:00",
+    "cbNumber" : 4263982640269299,
+    "billingAddress" : "paris",
+    "price" : 68.00,
+    "km" : 200,
+    "state" : 0
+  },
+  {
+    "idContrat" : "303dd68905d248177d2196f6161bc39fafefac593c5a3bd050I95IB",
+    "idVehicle" : "2322fd0020aaf0146b16250c9d11cec66320I6J6N",
+    "idPersonne" : "",
+    "dateDebut" : "2022-08-22 07:00",
+    "dateFin" : "2022-08-29 18:00",
+    "cbNumber" : 4263982640269299,
+    "billingAddress" : "paris",
+    "price" : 286.00,
+    "km" : 200,
+    "state" : 0
+  }
+]

@@ -1,3 +1,5 @@
+export const STRIPE_PUBLIC_KEY = "pk_test_51LcPW5AFfsQYgyNy7Ic4fr1fo81RfvdfrIMMZBLBvisnUpoQHMMPC2zK7iPLU1jlW273VnrurWjZvQFZskRpCTYr00bTDmMui9"
+
 export const slugify = (text) => {
     return text
         .toString() // Cast to string (optional)

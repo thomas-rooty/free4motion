@@ -15,7 +15,7 @@ const AddCarToLocation = () => {
 
     const [prixKm , setPrixKm] = useState(0.00)
     const [prixByDays, setPrixByDays] = useState(0.00)
-    const [pointRetrait, setPointRetrait] = useState("paris")
+    const [pointRetrait, setPointRetrait] = useState("1")
 
     const {userAgent} = navigator
 
@@ -51,7 +51,7 @@ const AddCarToLocation = () => {
                         id="select-point-retrait"
                         labelId="select-point-retrait-label"
                         value={pointRetrait}
-                        onChange={(e) => setPointRetrait(e)}
+                        onChange={(e) => setPointRetrait(e.target.value)}
                         sx={{
                             color : "white",
                             outline : 0,
@@ -65,8 +65,9 @@ const AddCarToLocation = () => {
                             }
                         }}
                     >
-                        <MenuItem value="paris">Agence de Paris</MenuItem>
-                        <MenuItem value="lyon">Agence de Lyon</MenuItem>
+                        <MenuItem value="1">Agence de Paris</MenuItem>
+                        <MenuItem value="2">Agence de Lyon</MenuItem>
+                        <MenuItem value="3">Agence de Lyon & Paris</MenuItem>
                     </Select>
                 </div>
             </div>

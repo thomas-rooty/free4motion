@@ -10,7 +10,7 @@ import {ButtonReservation} from "../components";
 const MoreInfoCar = () => {
 
     const location = useLocation()
-    const {image,marque,model,id,description} = location.state
+    const {image,marque,model,id,description, agence} = location.state
 
     const myDate = new Date()
     const {userAgent} = navigator
@@ -18,7 +18,7 @@ const MoreInfoCar = () => {
 
     const currentUserAgent = !!userAgent.match(/firefox|fxios/i)
 
-    const [pointRetrait, setPointRetrait] = useState("paris")
+    const [pointRetrait, setPointRetrait] = useState(agence === "1" || agence === "3" ? "Paris" : agence === "2" && "Lyon")
     const [startDate, setStartDate ] = useState(formatDateToDateTime(myDate))
     const [endDate, setEndDate] = useState(formatDateToDateTime(myDate))
     const [killometers, setKillometers] = useState(100)
@@ -95,7 +95,7 @@ const MoreInfoCar = () => {
     return(
         <div style={{marginTop : "46px"}}>
             <div style={{width : "250px", height : "115px", marginLeft : "auto", marginRight : "auto"}}>
-                <img src={image} style={{width : "100%", height : "100%"}} alt="voiture récap"/>
+                <img src={image ? image : "https://www.h2-mobile.fr/img/post-h2/aide-achat-voiture-hydrogene_280219.jpg"} style={{width : "100%", height : "100%"}} alt="voiture récap"/>
             </div>
             <StandarContainers>
                 <div style={{marginTop : "48px"}}>
@@ -125,8 +125,18 @@ const MoreInfoCar = () => {
                                 }
                             }}
                         >
-                            <MenuItem value="paris">Agence de Paris</MenuItem>
-                            <MenuItem value="lyon">Agence de Lyon</MenuItem>
+                            {
+                                agence === 3
+                                    ?
+                                    <>
+                                        <MenuItem value="Paris">Agence de Paris</MenuItem>
+                                        <MenuItem value="Lyon">Agence de Lyon</MenuItem>
+                                    </>
+                                :
+                                    agence === "1"
+                                        ? <MenuItem value="Paris">Agence de Paris</MenuItem>
+                                        : <MenuItem value="Lyon">Agence de Lyon</MenuItem>
+                            }
                         </Select>
                     </div>
                     <div style={{marginTop : "32px"}}>

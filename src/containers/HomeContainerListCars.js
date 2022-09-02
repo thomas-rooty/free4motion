@@ -41,11 +41,12 @@ const HomeContainerListCars = () => {
         }
     }, [search])
 
+    console.log(data)
 
-    const carParis = data.filter(element => element.type === "car" && element.agence === "1" || element.agence === "3")
-    const trotiParis = data.filter(element => element.type === "trottinette" && element.agence === "1" || element.agence === "3")
-    const carLyon = data.filter(element => element.type === "car" && element.agence === "2" || element.agence === "3")
-    const trotiLyon = data.filter(element => element.type === "trottinette" && element.agence === "2" || element.agence === "3")
+    const carParis = data.filter(element => element.type === "car" && element.agence === 0)
+    const trotiParis = data.filter(element => element.type === "trottinette" && element.agence === 0)
+    const carLyon = data.filter(element => element.type === "car" && element.agence === 1)
+    const trotiLyon = data.filter(element => element.type === "trottinette" && element.agence === 1)
 
 
     return(
@@ -61,7 +62,7 @@ const HomeContainerListCars = () => {
                         {
                             carParis.map(
                                 element =>
-                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.brand} modele={element.modele} id={element.id} description={element.description} agence={element.agence}/>
+                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.marque} modele={element.modele} id={element.id} description={element.description} agence={element.agence}/>
                             )
                         }
                     </div>
@@ -78,7 +79,7 @@ const HomeContainerListCars = () => {
                         {
                             trotiParis.map(
                                 element =>
-                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.brand} modele={element.modele} id={element.id} description={element.description} agence={element.agence}/>
+                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.marque} modele={element.modele} id={element.id} description={element.description} agence={element.agence}/>
                             )
                         }
                     </div>
@@ -95,7 +96,7 @@ const HomeContainerListCars = () => {
                         {
                             carLyon.map(
                                 element =>
-                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.brand} modele={element.modele} id={element.id} description={element.description} agence={element.agence}/>
+                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.marque} modele={element.modele} id={element.id} description={element.description} agence={element.agence}/>
                             )
                         }
                     </div>
@@ -112,7 +113,7 @@ const HomeContainerListCars = () => {
                         {
                             trotiLyon.map(
                                 element =>
-                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.brand} modele={element.modele} id={element.id} description={element.description} agence={element.agence}/>
+                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.marque} modele={element.modele} id={element.id} description={element.description} agence={element.agence}/>
                             )
                         }
                     </div>

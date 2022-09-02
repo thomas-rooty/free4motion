@@ -11,13 +11,9 @@ const AddCarToLocation = () => {
     const location = useLocation()
     const {id, image} = location.state
 
-    const newDate = new Date()
-
     const [prixKm , setPrixKm] = useState(0.00)
     const [prixByDays, setPrixByDays] = useState(0.00)
     const [pointRetrait, setPointRetrait] = useState("1")
-
-    const {userAgent} = navigator
 
 
     return(

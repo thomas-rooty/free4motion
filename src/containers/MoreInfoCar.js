@@ -18,7 +18,7 @@ const MoreInfoCar = () => {
 
     const currentUserAgent = !!userAgent.match(/firefox|fxios/i)
 
-    const [pointRetrait, setPointRetrait] = useState(agence === "1" || agence === "3" ? "Paris" : agence === "2" && "Lyon")
+    const [pointRetrait, setPointRetrait] = useState(agence)
     const [startDate, setStartDate ] = useState(formatDateToDateTime(myDate))
     const [endDate, setEndDate] = useState(formatDateToDateTime(myDate))
     const [killometers, setKillometers] = useState(100)
@@ -92,6 +92,8 @@ const MoreInfoCar = () => {
 
     }
 
+    console.log(pointRetrait)
+
     return(
         <div style={{marginTop : "46px"}}>
             <div style={{width : "250px", height : "115px", marginLeft : "auto", marginRight : "auto"}}>
@@ -126,16 +128,17 @@ const MoreInfoCar = () => {
                             }}
                         >
                             {
-                                agence === 3
+                                agence === 0
                                     ?
-                                    <>
-                                        <MenuItem value="Paris">Agence de Paris</MenuItem>
-                                        <MenuItem value="Lyon">Agence de Lyon</MenuItem>
-                                    </>
-                                :
-                                    agence === "1"
-                                        ? <MenuItem value="Paris">Agence de Paris</MenuItem>
-                                        : <MenuItem value="Lyon">Agence de Lyon</MenuItem>
+                                    <MenuItem value={0}>Agence de Paris</MenuItem>
+                                    : agence === 1
+                                        ?
+                                        <MenuItem value={1}>Agence de Lyon</MenuItem>
+                                        :
+                                        <>
+                                            <MenuItem value={0}>Agence de Paris</MenuItem>
+                                            <MenuItem value={1}>Agence de Lyon</MenuItem>
+                                        </>
                             }
                         </Select>
                     </div>

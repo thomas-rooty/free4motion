@@ -1,14 +1,15 @@
 import {
-    PaymentElement,
     useStripe,
     useElements,
-    CardNumberElement,
-    CardExpiryElement,
-    CardCvcElement, CardElement
+    CardElement
 } from "@stripe/react-stripe-js";
 import {ButtonReservation} from "../../components";
+import {useMessageStateClient} from "../../context/MessageStateClient";
+
 
 const CheckOutForm = () => {
+
+    const {validateMessage} = useMessageStateClient()
 
     const stripe = useStripe();
     const elements = useElements();
@@ -19,8 +20,23 @@ const CheckOutForm = () => {
             type : "card",
             card : elements.getElement(CardElement)
         })
+
         if (!error) {
-            console.log('token généré', paymentMethod)
+
+            const dataToPost = {"id" : paymentMethod.id, "amount" : 150}
+
+            const reqPaymentNode = await fetch("http://139.162.191.134:8080/stripe/charge", {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dataToPost)
+            })
+            const result = await reqPaymentNode.json()
+            if (result.success) {
+                validateMessage("Payement bien effectué ! merci", "ok", "/my-orders")
+            }
         }
     }
 
@@ -46,7 +62,8 @@ const CheckOutForm = () => {
         <div style={{maxWidth : "340px", flexFlow : "row wrap"}}>
             <form onSubmit={(e) => handleSubmit(e)}>
                 <CardElement options={{
-                    style : style
+                    style : style,
+                    hidePostalCode: true
                 }}/>
                 <div style={{marginTop : "10px"}}>
                     <ButtonReservation msg="Payer"/>

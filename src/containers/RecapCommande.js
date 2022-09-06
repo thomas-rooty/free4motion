@@ -8,29 +8,72 @@ import DistanceWhite from '../img/distanceWhite.png';
 import ChevronBackWhite from '../img/backWhite.png'
 import {ButtonReservation} from "../components";
 import {Link} from "react-router-dom";
+import styled from "styled-components";
+import DefaultImg from "../img/aide-achat-voiture-hydrogene_280219.jpg";
+
+const ContainerReturn = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+const ContainerRecapCommande = styled.div`
+    margin-top: 32px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 500px;
+    background-color: #10111E;
+`;
+const ContainerImg = styled.div`
+    margin-top: 16px;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+`;
+
+const ContainerItems = styled.div`
+    margin-top: 24px;
+    display: flex;
+    justify-content: flex-start;
+    width: 30%;
+    min-width: 260px;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+`;
+const H5 = styled.h5`
+    color: white;
+    font-size: 14px;
+    text-align: center;
+    margin-left: 10%;
+`;
+
 
 
 const RecapCommande = () => {
 
     const location = useLocation()
     const navigate = useNavigate()
-    const {endDate,id,image,killometers,pointRetrait,startDate,price} = location.state
+    const {endDate,image,killometers,pointRetrait,startDate,price} = location.state
 
     return (
         <div style={{textAlign : "center", marginTop : "32px"}}>
-            <div style={{display : "flex", justifyContent : "center", alignItems : "center"}}>
+            <ContainerReturn>
                 <img onClick={() => navigate(-1, {"previousData" : {endDate, pointRetrait, startDate, killometers}})} src={ChevronBackWhite} alt="retour arrière"/>
                 <h2 style={{color : "white"}}>Récapitulatif commande</h2>
-            </div>
-            <div style={{marginTop : "32px" , width : "80%", marginLeft : "auto", marginRight : "auto", minHeight : "500px", backgroundColor : "#10111E"}}>
-                <div style={{marginTop : "16px"}}>
-                    <img src={image} alt="votre voiture" style={{width : "80%", height : "80%", marginTop : "16px"}}/>
-                </div>
-                <div style={{marginTop : "24px", display : "flex", justifyContent : "space-evenly", width : "80%", marginLeft : "auto", marginRight : "auto"}}>
+            </ContainerReturn>
+            <ContainerRecapCommande>
+                <ContainerImg>
+                    <img src={image} alt="votre voiture" style={{width : "80%", height : "80%", marginTop : "16px"}} onError={({currentTarget}) => {
+                        currentTarget.onerror= null;
+                        currentTarget.src= DefaultImg
+                    }}/>
+                </ContainerImg>
+                <ContainerItems>
                     <div style={{width : "32px"}}>
                         <img src={LocalistaionWhite} alt="icone localisation" style={{width : "100%"}}/>
                     </div>
-                    <h5 style={{color : "white", fontSize : "14px", textAlign : "center"}}>
+                    <H5>
 
                         {`Agence de ${pointRetrait}`}
                         <br/>
@@ -41,33 +84,32 @@ const RecapCommande = () => {
                             :
                                 <>32 Rue De Berlin, Lyon</>
                         }
-                    </h5>
-                </div>
-                <div style={{marginTop : "24px", display : "flex", justifyContent : "space-evenly", width : "80%", marginLeft : "auto", marginRight : "auto"}}>
+                    </H5>
+                </ContainerItems>
+                <ContainerItems>
                     <div style={{width : "32px"}}>
                         <img src={CalendarWhite} alt="icone calendar"/>
                     </div>
-                    <h5 style={{color : "white", fontSize : "14px", textAlign : "center"}}>
+                    <H5>
                         {
                             `${startDate.replace('T', ' ')} > ${endDate.replace('T', ' ')}`
                         }
-                    </h5>
-                </div>
-                <div style={{marginTop : "24px", display : "flex", justifyContent : "space-evenly", width : "80%", marginLeft : "auto", marginRight : "auto"}}>
+                    </H5>
+                </ContainerItems>
+                <ContainerItems>
                     <div style={{width : "32px"}}>
                         <img src={DistanceWhite} alt="icone distance"/>
                     </div>
-                    <h5 style={{color : "white", fontSize : "14px", textAlign : "center"}}>
+                    <H5>
                         {
                             killometers + " km"
                         }
-                    </h5>
+                    </H5>
+                </ContainerItems>
+                <div style={{marginTop : "32px", width : "80%", maxWidth : "720px", marginLeft : "auto", marginRight : "auto", paddingBottom : "20px"}}>
+                    <Link to="/payment"><ButtonReservation height={40} msg={`Payer - ${price} €`} /></Link>
                 </div>
-                <div style={{marginTop : "32px", width : "80%", marginLeft : "auto", marginRight : "auto"}}>
-                    <Link to="/payment"><ButtonReservation height={30} msg={`Payer - ${price} €`} /></Link>
-                </div>
-
-            </div>
+            </ContainerRecapCommande>
         </div>
 
     )

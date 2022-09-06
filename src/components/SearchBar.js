@@ -42,7 +42,7 @@ const SearchBar = () => {
     return(
         <React.Fragment>
             <ContainerSearch>
-                <SearchInputContainer onChange={(e) => handleChangeSearch(e.target.value)}/>
+                <SearchInputContainer placeholder="Chercher par modèle" onChange={(e) => handleChangeSearch(e.target.value)}/>
                 <IconButton>
                     <img src={SearchIcon} style={{width : "24px"}}/>
                 </IconButton>

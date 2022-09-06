@@ -1,14 +1,22 @@
 
 import {SearchBar} from "../components";
+import styled from "styled-components";
+
+const ContainerSearchBar = styled.div`
+    position: relative;
+    margin-top: 48px;
+    display: flex;
+    justify-content: center;
+`;
 
 
 const Search = () => {
 
     return(
 
-        <div style={{position : "relative",marginTop : "48px", display : "flex", justifyContent : "center"}}>
+        <ContainerSearchBar>
             <SearchBar/>
-        </div>
+        </ContainerSearchBar>
     )
 }
 export default Search;

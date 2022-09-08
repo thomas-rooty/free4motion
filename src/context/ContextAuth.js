@@ -11,7 +11,6 @@ export const ContextAuthProvider = ({children}) => {
     const [role, setRole] = useState(undefined)
 
 
-
     const fetchRoleByToken = async (token) => {
 
         if (token) {
@@ -20,7 +19,7 @@ export const ContextAuthProvider = ({children}) => {
             const [result] = await req.json()
 
             if (result.idPersonne) {
-                setRole(result.role + 2)
+                setRole(result.role + 1)
             } else {
                 setRole(0)
                 return
@@ -48,10 +47,16 @@ export const ContextAuthProvider = ({children}) => {
         localStorage.setItem("token" , "")
         fetchRoleByToken("")
     }
+    const getIdCurrentPpl = async () => {
+        const token = localStorage.getItem("token")
+        const req = await fetch(`http://139.162.191.134:8080/api/user?token=${token}`)
+        const [result] = await req.json()
+        return result
+    }
 
     return(
 
-        <ContextAuth.Provider value={{lastNavigate,login, logout, role,firstReloadDone, setLastNavigate}}>
+        <ContextAuth.Provider value={{lastNavigate,login, logout, role,firstReloadDone, setLastNavigate,getIdCurrentPpl}}>
             <>
                 {
                     firstReloadDone && children

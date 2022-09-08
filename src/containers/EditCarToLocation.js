@@ -17,6 +17,7 @@ const EditCarToLocation = () => {
     const [prixKm , setPrixKm] = useState("0.00")
     const [prixByDays, setPrixByDays] = useState("0.00")
     const [paramsCar, setParamsCar] = useState({})
+    const [idOffre, setIdOffre] = useState(undefined)
 
     const fetchByIdInfo = async (id) => {
         const req = await fetch(`http://139.162.191.134:8080/api/vehicules/${id}`)
@@ -24,7 +25,16 @@ const EditCarToLocation = () => {
         setParamsCar(data)
     }
 
-    const handleSubmitAddLocation = async (id) => {
+    const fetchGetValueLocation = async (id) => {
+        const req = await fetch(`http://139.162.191.134:8080/api/vehicules/${id}/offre`)
+        const data = await req.json()
+        const {idOffre, prixParJour, prixParKm} = data
+        setPrixKm(prixParKm)
+        setPrixByDays(prixParJour)
+        setIdOffre(idOffre)
+    }
+
+    const handleSubmitEditLocation = async (id) => {
 
         const data = {
             "idVehicule" : id,
@@ -32,8 +42,8 @@ const EditCarToLocation = () => {
             "prixParJour" : parseFloat(prixByDays)
         }
 
-        const reqPostLocation = await fetch('http://139.162.191.134:8080/api/offre', {
-            method: 'POST',
+        const reqPostLocation = await fetch(`http://139.162.191.134:8080/api/offre/${idOffre}`, {
+            method: 'PUT',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -43,8 +53,8 @@ const EditCarToLocation = () => {
 
         const resp = await reqPostLocation.json()
 
-        if (resp.id) {
-            validateMessage("Location bien modifié, merci", "ok")
+        if (resp.message === "Offre was updated successfully!") {
+            validateMessage("Location bien modifié, merci", "ok", -1)
         }
 
     }
@@ -56,6 +66,7 @@ const EditCarToLocation = () => {
         } else {
             fetchByIdInfo(params.currID)
         }
+        fetchGetValueLocation(params.currID)
     }, [])
 
     const handleChangeValueDays = (event) => {
@@ -67,10 +78,24 @@ const EditCarToLocation = () => {
         setPrixKm(event.target.value)
     }
 
-    const removeOffer = (id) => {
+    const removeOffer = async (id) => {
+
+        const req = await fetch(`http://139.162.191.134:8080/api/offre/${id}`, {
+            method : "DELETE"
+        })
+        const result = await req.json()
+
+        if (result.message) {
+            validateMessage("Location bien supprimé", "ok", -1)
+        } else {
+            validateMessage("Erreur lors de la suppression", "pas ok", 0)
+        }
+
+        console.log(result)
+
 
         setTimeout(() => {
-            validateMessage("Location bien supprimé", "ok", -1)
+
         }, 1000)
 
     }
@@ -82,7 +107,10 @@ const EditCarToLocation = () => {
         <div style={{marginTop : "32px"}}>
             <div style={{textAlign : "center", display : "flex", justifyContent : "center", alignItems : "center"}}>
                 <h1 style={{color : "white"}}>Modifier location</h1>
-                <img src={RemoveImg} style={{width : "24px", marginLeft : "10px", cursor : "pointer"}} onClick={() => removeOffer(id)}/>
+                {
+                    idOffre &&
+                    <img src={RemoveImg} style={{width : "24px", marginLeft : "10px", cursor : "pointer"}} onClick={() => removeOffer(idOffre)}/>
+                }
             </div>
             <div style={{marginTop : "32px", width : "70%", maxWidth : "480px", marginLeft : "auto", marginRight : "auto"}}>
                 <img src={image} alt="recap voiture" style={{width : "100%"}} onError={({currentTarget}) => {
@@ -101,7 +129,7 @@ const EditCarToLocation = () => {
                 </div>
             </div>
             <div style={{marginTop : "32px", width : "70%", marginLeft : "auto", marginRight : "auto"}} onClick={() => {
-                handleSubmitAddLocation(id).catch(validateMessage("Erreur ! merci de réessayer" , "pas ok"))
+                handleSubmitEditLocation(id)
             }}>
                 <ButtonReservation msg="Modifier la location" height={35} />
             </div>

@@ -7,8 +7,6 @@ import DefaultImg from "../img/aide-achat-voiture-hydrogene_280219.jpg";
 import FullCalendar from '@fullcalendar/react' // must go before plugins
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import listUsers from '../datatest/users.json'
-import ListCommandes from '../datatest/contrat.json'
 import {useParams} from "react-router-dom";
 import styled from "styled-components";
 import {StandarContainers} from "./Containers";
@@ -24,6 +22,9 @@ const ContainerFullCalendar = styled.div`
   & .fc-event {
     height: 60px !important;
   }
+  & .fc-event-time {
+    display: none;
+  }
 `;
 
 const BackOfficeAddCommande = () => {
@@ -36,20 +37,84 @@ const BackOfficeAddCommande = () => {
     const [km, setKm] = useState(100);
     const [status, setStatus] = useState(1);
 
+    const [listOffreLocations, setListOffreLocations] = useState([])
+    const [listEvents, setListEvents] = useState([])
+    const [dataOffreLocation, setDataOffreLocation] = useState({})
+    const [prix, setPrix] = useState(0)
+
+    const getListOffreLocations = async () => {
+
+        const req = await fetch('http://139.162.191.134:8080/api/offre')
+        const data = await req.json()
+        setListOffreLocations(data)
+
+    }
+
+    const getOffreByIDVehicule = async () => {
+
+        const req = await fetch(`http://139.162.191.134:8080/api/vehicules/${selectedCar}/offre`)
+        const result = await req.json()
+        setDataOffreLocation(result)
+
+    }
+
+    useEffect(() => {
+
+        if (Object.keys(dataOffreLocation).length > 0) {
+
+            let nbr;
+            if (selectedDate.start === selectedDate.end) {
+                nbr = 1
+            } else {
+                const timeStampStart = new Date(selectedDate.start.replaceAll("-"," ")).getTime()
+                const timeStampEnd = new Date(selectedDate.end.replaceAll("-"," ")).getTime()
+
+                const differenceTimeStamp = timeStampEnd - timeStampStart
+                nbr = Math.ceil(differenceTimeStamp / (1000 * 3600 * 24)) + 1
+            }
+            const priceDays = nbr * dataOffreLocation.prixParJour
+            const priceKms = km * dataOffreLocation.prixParKm
+            setPrix(priceDays + priceKms)
+        }
+
+
+    }, [selectedDate, km])
+    const getCommandeByIdOffre = async () => {
+
+        const req = await fetch(`http://139.162.191.134:8080/api/contrat/offre/${dataOffreLocation.idOffre}`)
+        const result = await req.json()
+        const reqGetAllUsers = await fetch(`http://139.162.191.134:8080/api/users`)
+        const allUsers = await reqGetAllUsers.json()
+        const currListEvents = result.map(element => (
+            {
+                "id" : element.idContrat,
+                "start" : element.dateDebut,
+                "end" : element.dateFin,
+                "title" : `Réservation faite par : ${allUsers.filter(user => user.idPersonne === element.idPersonne)[0].email}`,
+            }
+        ))
+        setListEvents(currListEvents)
+
+    }
+
+    useEffect(() => {
+        getListOffreLocations()
+    }, [])
+
+    useEffect(() => {
+        if (selectedCar) {
+            getOffreByIDVehicule()
+        }
+    }, [selectedCar])
+    useEffect(() => {
+        if (Object.keys(dataOffreLocation).length > 0) {
+            getCommandeByIdOffre()
+        }
+    }, [dataOffreLocation])
+
 
     const {currID} = useParams()
 
-    const listCommandeVehicle = ListCommandes.filter(commande => commande.idVehicle === selectedCar)
-
-    const listEvents = listCommandeVehicle.map(element => (
-        {
-            "id" : element.idContrat,
-            "start" : element.dateDebut,
-            "end" : element.dateFin,
-            "title" : `Réservation faite par : ${listUsers.filter(user => user.idPersonne === element.idPersonne)[0].email}`,
-            allDay : true,
-        }
-    ))
 
     useEffect(() => {
         const [InfoVehicleSelected] = listVehicles.filter(vehicle => vehicle.id === selectedCar)
@@ -75,14 +140,34 @@ const BackOfficeAddCommande = () => {
             "end" : infos.dateStr + " 18:00"
         })
     }
-    const handleSubmit = () => {
-        setTimeout(() => {
+    const handleSubmit = async () => {
+
+        const data = {
+            "idPersonne" : parseInt(currID),
+            "dateDebut" : selectedDate.start,
+            "dateFin" : selectedDate.end,
+            "kmContrat" : parseInt(km),
+            "state" : status,
+            "idOffre" : dataOffreLocation.idOffre
+        }
+        const reqPostCommande = await fetch('http://139.162.191.134:8080/api/contrat', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        const result = await reqPostCommande.json()
+        if (result.id) {
             validateMessage("Commande bien enregistrez !", "ok", -1)
-        }, 1000)
+        } else {
+            validateMessage("Une erreur est survenue", "pas ok", 0)
+        }
+
     }
 
-    const [goodVehicles] = listVehicles.filter(element => element.id === selectedCar)
-
+    const [goodVehicles] = listOffreLocations.filter(element => element.idVehicle === selectedCar)
 
     return (
 
@@ -101,15 +186,15 @@ const BackOfficeAddCommande = () => {
                     >
                         <MenuItem value="" disabled>Sélectionner une voiture</MenuItem>
                         {
-                            listVehicles.length > 0
-                                && listVehicles.map(
+                            listOffreLocations.length > 0
+                                && listOffreLocations.map(
                                     vehicle =>
-                                        <MenuItem value={vehicle.id} style={{display : "flex", justifyContent : "space-evenly"}}>
+                                        <MenuItem value={vehicle.idVehicule} key={vehicle.idVehicule} style={{display : "flex", justifyContent : "space-evenly"}}>
                                             <img src={vehicle.image ? vehicle.image : "https://www.h2-mobile.fr/img/post-h2/aide-achat-voiture-hydrogene_280219.jpg"} alt="votre voiture" style={{width : "10%", minWidth : "100px", height : "10%", marginTop : "16px"}} onError={({currentTarget}) => {
                                                 currentTarget.onerror= null;
                                                 currentTarget.src= DefaultImg
                                             }}/>
-                                            <h2>{vehicle.licensePlate}</h2>
+                                            <h2>{vehicle.plaque}</h2>
                                         </MenuItem>
                                 )
                         }
@@ -141,7 +226,7 @@ const BackOfficeAddCommande = () => {
                                 </div>
                                 <ContainerInputMui>
                                     <label htmlFor="form-input-km" style={{color : "#747474", display: "block"}}>Distance</label>
-                                    <Input id="form-input-km" type="number" fullWidth placeholder="En kilomètre" sx={styleInputMui} value={km} onChange={(e) => setKm(e.target.vale)}/>
+                                    <Input id="form-input-km" type="number" fullWidth placeholder="En kilomètre" sx={styleInputMui} value={km} onChange={(e) => setKm(e.target.value)}/>
                                 </ContainerInputMui>
                                 <div style={{width : "80%", marginLeft : "auto", marginRight : "auto"}}>
                                     {
@@ -181,6 +266,9 @@ const BackOfficeAddCommande = () => {
                                             <MenuItem value={3}>A payé</MenuItem>
                                         </Select>
                                     </ContainerInputMui>
+                                </div>
+                                <div style={{marginTop : "32px"}}>
+                                    <h2 style={{color : "white"}}>{`${prix.toFixed(2).toString()}€ TTC`}</h2>
                                 </div>
                                 <div style={{marginTop : "20px"}} onClick={() => handleSubmit()}>
 

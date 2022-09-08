@@ -5,13 +5,12 @@ import {useEffect, useState} from "react";
 import EditImg from '../img/edit.png'
 import ChevronDown from '../img/down-arrow.png'
 import Validate from '../img/check.png'
+import RemoveImg from '../img/remove.png'
 import {useMessageStateClient} from "../context/MessageStateClient";
 import {ContainerInputMui} from "../containers/MoreInfoCar";
-import {LabelCustom} from "../containers/Register";
 import {Input} from "@mui/material";
 import {styleInputMui} from "../utils";
 
-import ListContrats from '../datatest/contrat.json'
 import BoxCommandeAdmin from "./BoxCommandeAdmin";
 import addWhite from '../img/addWhite.png'
 import {Link} from "react-router-dom";
@@ -50,28 +49,52 @@ export const H4 = styled.h4`
 `;
 
 const ContainerImg = styled.div`
+    margin-left: 10px;
     transform: ${props => props.rotate && "rotate(180deg)"}
 `;
 
 
-const BoxUser = ({id, nom, prenom, naissance, adresse, numeroPermis, handleChange}) => {
+const BoxUser = ({data, handleChange}) => {
 
     const [userWantEdit, setUserWantEdit] = useState(false)
     const [showCommands, setUserShowCommands] = useState(false)
     const {validateMessage} = useMessageStateClient()
 
+    const {idPersonne, nom, prenom, naissance,addresse,numeroPermis} = data
+
     const [contratsPpl, setContratsPpl] = useState([])
+
+    const getAllContratsPpl = async () => {
+
+        const req = await fetch(`http://139.162.191.134:8080/api/contrat/user/${idPersonne}`)
+        const result = await req.json()
+
+        if (!result.message) {
+            setContratsPpl(result)
+        }
+
+    }
 
 
 
     useEffect(() => {
 
+        getAllContratsPpl()
 
-        setContratsPpl(ListContrats.filter(element => element.idPersonne === id))
 
     }, [])
 
-    const handleEditUser = () => {
+    const handleEditUser = async () => {
+
+
+        const req = await fetch(`http://localhost:8080/api/user/${idPersonne}`,{
+            method : "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
+        })
 
 
         setTimeout(() => {
@@ -81,6 +104,16 @@ const BoxUser = ({id, nom, prenom, naissance, adresse, numeroPermis, handleChang
 
 
     }
+
+    const handleDeleteUser = async () => {
+
+        const req = await fetch(`http://localhost:8080/api/user/${idPersonne}`,{
+            method : "DELETE"
+        })
+        const result = await req.json()
+        console.log(result)
+    }
+
 
     return (
         <ContainerDiv>
@@ -93,7 +126,7 @@ const BoxUser = ({id, nom, prenom, naissance, adresse, numeroPermis, handleChang
 
                                     <div className="child">
                                         <H4>ID :</H4>
-                                        <h2>{id}</h2>
+                                        <h2>{idPersonne}</h2>
                                     </div>
                                     <div className="child">
                                         <H4>Nom :</H4>
@@ -105,11 +138,11 @@ const BoxUser = ({id, nom, prenom, naissance, adresse, numeroPermis, handleChang
                                     </div>
                                     <div className="child">
                                         <H4>Date de naissance :</H4>
-                                        <h2>{naissance}</h2>
+                                        <h2>{naissance.split("T")[0]}</h2>
                                     </div>
                                     <div className="child">
                                         <H4>Adresse : </H4>
-                                        <h2>{adresse}</h2>
+                                        <h2>{addresse}</h2>
                                     </div>
                                     <div className="child">
                                         <H4>Numéro de permis :</H4>
@@ -127,26 +160,30 @@ const BoxUser = ({id, nom, prenom, naissance, adresse, numeroPermis, handleChang
                             <div style={{display :"flex", flexFlow : "row wrap"}}>
 
                                 <ContainerInputMui width={15}>
-                                    <Input id="form-input-serialNumber" fullWidth type="text" value={nom} sx={styleInputMui} onChange={(e) => handleChange(id, "nom", e.target.value)}/>
+                                    <Input id="form-input-serialNumber" fullWidth type="text" value={nom} sx={styleInputMui} onChange={(e) => handleChange(idPersonne, "nom", e.target.value)}/>
                                 </ContainerInputMui>
                                 <ContainerInputMui width={15}>
-                                    <Input id="form-input-serialNumber" fullWidth type="text" value={prenom} sx={styleInputMui} onChange={(e) => handleChange(id, "prenom", e.target.value)}/>
+                                    <Input id="form-input-serialNumber" fullWidth type="text" value={prenom} sx={styleInputMui} onChange={(e) => handleChange(idPersonne, "prenom", e.target.value)}/>
                                 </ContainerInputMui>
                                 <ContainerInputMui width={15}>
-                                    <Input id="form-input-serialNumber" fullWidth type="date" value={naissance} sx={styleInputMui} onChange={(e) => handleChange(id, "naissance", e.target.value)}/>
+                                    <Input id="form-input-serialNumber" fullWidth type="date" value={naissance.split("T")[0]} sx={styleInputMui} onChange={(e) => handleChange(idPersonne, "naissance", e.target.value)}/>
                                 </ContainerInputMui>
                                 <ContainerInputMui width={15}>
-                                    <Input id="form-input-serialNumber" fullWidth type="text" value={adresse} sx={styleInputMui} onChange={(e) => handleChange(id, "adresse", e.target.value)}/>
+                                    <Input id="form-input-serialNumber" fullWidth type="text" value={addresse} sx={styleInputMui} onChange={(e) => handleChange(idPersonne, "addresse", e.target.value)}/>
                                 </ContainerInputMui>
                                 <ContainerInputMui width={15}>
-                                    <Input id="form-input-serialNumber" fullWidth type="number" value={numeroPermis} sx={styleInputMui} onChange={(e) => handleChange(id, "numeroPermis", e.target.value)}/>
+                                    <Input id="form-input-serialNumber" fullWidth type="number" value={numeroPermis} sx={styleInputMui} onChange={(e) => handleChange(idPersonne, "numeroPermis", e.target.value)}/>
                                 </ContainerInputMui>
                             </div>
-
-                            <img src={Validate} onClick={() => {handleEditUser()}}/>
-                            <ContainerImg rotate={showCommands && true} onClick={() => {setUserShowCommands(prevState => prevState === false)}}>
-                                <img src={ChevronDown}/>
-                            </ContainerImg>
+                            <div style={{display :"flex", flexFlow : "row wrap"}}>
+                                <div style={{display : "flex", justifyContent : "space-around", alignItems : "center"}}>
+                                    <img src={Validate} onClick={() => {handleEditUser()}}  style={{width : "32px"}}/>
+                                    <img src={RemoveImg} onClick={() => handleDeleteUser()} style={{width : "32px"}}/>
+                                </div>
+                                <ContainerImg rotate={showCommands && true} onClick={() => {setUserShowCommands(prevState => prevState === false)}}>
+                                    <img src={ChevronDown}/>
+                                </ContainerImg>
+                            </div>
 
 
                         </>
@@ -166,7 +203,7 @@ const BoxUser = ({id, nom, prenom, naissance, adresse, numeroPermis, handleChang
 
                         )
                     }
-                    <Link to={`/free_admin/add_commande/${id}`}><img src={addWhite} style={{marginTop : "24px", width : "24px"}}/></Link>
+                    <Link to={`/free_admin/add_commande/${idPersonne}`}><img src={addWhite} style={{marginTop : "24px", width : "24px"}}/></Link>
                 </div>
             }
 

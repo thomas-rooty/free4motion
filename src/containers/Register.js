@@ -47,7 +47,7 @@ const Register = () => {
             })
             const result = await req.json()
             if (result.id) {
-                validateMessage("Vous êtes bien inscrit", "pas ok" , "/login")
+                validateMessage("Vous êtes bien inscrit", "ok" , "/login")
             } else {
                 validateMessage(`Erreur lors de l'inscription \n ${result.msg ? result.msg : ""}`, "pas ok", 0)
             }

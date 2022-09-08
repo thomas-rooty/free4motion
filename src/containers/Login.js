@@ -23,10 +23,22 @@ const Login = () => {
 
     const handleLogin = async () => {
 
+
         const req = await fetch(`http://139.162.191.134:8080/api/login?email=${userName}&pwd=${passWord}`)
         const data = await req.text()
-        validateMessage("Vous êtes bien connectés", "ok", lastNavigate ? lastNavigate : "/")
-        login(data)
+        let jsonData;
+        try {
+            jsonData = JSON.parse(data)
+        }catch (e) {
+            jsonData = data
+        }
+        if (jsonData.message){
+            validateMessage("Mot de passe et/ou utilisateur incorrect", "pas ok", 0)
+        } else {
+            validateMessage("Vous êtes bien connectés", "ok", lastNavigate ? lastNavigate : "/")
+            login(data)
+        }
+
     }
 
     return(

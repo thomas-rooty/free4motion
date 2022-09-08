@@ -36,15 +36,17 @@ const ContainerFullCalendar = styled.div`
   & .fc-event {
     height: 60px !important;
   }
+  & .fc-event-time {
+    display: none;
+  }
 `;
 
 
 const MoreInfoCar = () => {
 
-    console.log('jo')
 
     const {validateMessage} = useMessageStateClient()
-    const {role, setLastNavigate} = useContextAuth()
+    const {role, setLastNavigate,getIdCurrentPpl} = useContextAuth()
 
     const location = useLocation()
     const params = useParams()
@@ -56,11 +58,13 @@ const MoreInfoCar = () => {
 
 
     const [pointRetrait, setPointRetrait] = useState(0)
-    const [startDate, setStartDate ] = useState("")
+    const [startDate, setStartDate] = useState("")
     const [endDate, setEndDate] = useState("")
     const [killometers, setKillometers] = useState(100)
     const [price, setPrice] = useState(0)
     const [paramsCar, setParamsCar] = useState({})
+    const [paramsLocation, setParamsLocation] = useState({})
+    const [listEvents, setListEvents] = useState([])
 
     const fetchByIdInfo = async (id) => {
         const req = await fetch(`http://139.162.191.134:8080/api/vehicules/${id}`)
@@ -71,64 +75,192 @@ const MoreInfoCar = () => {
     const handleSelectDate = (infos) => {
 
 
-        if (infos.end.setDate(infos.end.getDate()-1) === infos.start.setDate(infos.start.getDate())) {
-            return
-        } else {
-            const checkStart = listEvents.filter(element => infos.start.getTime() >= Date.parse(element.start) && infos.start.getTime() <= Date.parse(element.end))
-            const checkEnd = listEvents.filter(element => infos.end.setDate(infos.end.getDate()+1) >= Date.parse(element.start) && infos.end.setDate(infos.end.getDate()+1) <= Date.parse(element.end))
+        const occurenceStart = getEvents(infos.start)
+        const occurenceEnd = getEvents(infos.end)
 
-            if (checkStart.length > 0 || checkEnd.length > 0) {
-                validateMessage("Merci de renseigner des dates disponibles", "pas ok", 0)
-            } else {
-                const dateLessOneDays = infos.end.setDate(infos.end.getDate() + 1)
-                const [newDate] = new Date(dateLessOneDays).toISOString().split("T")
+
+        if (!occurenceStart || !occurenceEnd) {
+            const inverse = inverseGetEvents(infos.start, infos.end)
+            if (!inverse) {
                 setStartDate(infos.startStr + " 07:00")
-                setEndDate(newDate  + " 18:00")
+                setEndDate(infos.endStr  + " 18:00")
+            } else {
+                validateMessage("Merci de renseigner des dates disponibles", "pas ok", 0)
             }
+        } else {
+            validateMessage("Merci de renseigner des dates disponibles", "pas ok", 0)
         }
+
+
+        console.log(occurenceStart, occurenceEnd)
+
+
+
+
+    }
+
+    const getEvents = (date) => {
+
+
+        const newDate = date.setHours(9)
+        let occurrence = false;
+        listEvents.forEach((entry) => {
+
+            const newDateStart = new Date(entry["start"])
+            const newDateEnd = new Date(entry["end"])
+
+            if (newDateStart.getTime() == newDate){
+                occurrence = true
+            }
+            else if (newDateStart.getTime() < newDate && newDateEnd.getTime() > newDate){
+                occurrence = true
+            }
+        });
+
+        return occurrence
+    }
+
+    const inverseGetEvents = (dateDebut, dateFin) => {
+
+        let occurrence = false;
+        const newDateDebut = dateDebut.setHours(9)
+        const newDateFin = dateFin.setHours(9)
+
+        listEvents.forEach((entry) => {
+            const newDateStart = new Date(entry["start"])
+
+            if (newDateDebut < newDateStart.getTime() && newDateFin > newDateStart.getTime()){
+                occurrence = true
+            }
+
+        })
+
+        return occurrence
 
 
     }
     const handleClickDate = (infos) => {
-        const checkIfDateOk = listEvents.filter(element => infos.date.getTime() >= Date.parse(element.start) && infos.date.getTime() <= Date.parse(element.end))
-        if (checkIfDateOk.length > 0) {
+
+        const occurrence = getEvents(infos.date)
+        if (occurrence) {
             validateMessage("Merci de renseigner des dates disponibles", "pas ok", 0)
         } else {
             setStartDate(infos.dateStr + " 07:00")
             setEndDate(infos.dateStr  + " 18:00")
         }
+
+    }
+
+    const fetchOffreVehicule =  async  () => {
+
+        const req = await fetch(`http://139.162.191.134:8080/api/vehicules/${paramsCar.idVehicule}/offre`)
+        const result = await req.json()
+        setParamsLocation(result)
     }
 
     useEffect(() => {
-        setPointRetrait(paramsCar.agence)
+
+        if (Object.keys(paramsCar).length > 0) {
+            setPointRetrait(paramsCar.agence)
+            fetchOffreVehicule()
+        }
+
+
     }, [paramsCar])
 
     useEffect(() => {
-
-        setLastNavigate(location.pathname)
-            if (location.state) {
-                setParamsCar(location.state)
-            } else {
-                fetchByIdInfo(params.currID)
-            }
+        if (role !== 2){
+            setLastNavigate(location.pathname)
+        }
+        fetchByIdInfo(params.currID)
 
     }, [])
 
     useEffect(() => {
+        if (Object.keys(paramsLocation).length > 0){
 
-        let nbr;
-        if (startDate === endDate) {
-            nbr = 1
-        } else {
-            const timeStampStart = new Date(startDate.replaceAll("-"," ")).getTime()
-            const timeStampEnd = new Date(endDate.replaceAll("-"," ")).getTime()
-
-            const differenceTimeStamp = timeStampEnd - timeStampStart
-            nbr = Math.ceil(differenceTimeStamp / (1000 * 3600 * 24)) + 1
+            fetchCommandesByLocation()
         }
-        const priceDays = nbr * priceByDays
-        const priceKms = killometers * priceByKm
-        setPrice(priceDays + priceKms)
+    }, [paramsLocation])
+
+    const fetchCommandesByLocation = async () => {
+        const req = await fetch(`http://139.162.191.134:8080/api/contrat/offre/${paramsLocation.idOffre}`)
+        const result = await req.json()
+        const currListEvents = result.map(element => (
+            {
+                "id" : element.idContrat,
+                "start" : element.dateDebut,
+                "end" : element.dateFin,
+                allDay : element.dateDebut.split("T")[0] === element.dateFin.split("T")[0]
+            }
+        ))
+
+        setListEvents(currListEvents)
+    }
+
+    const handleSubmit = async () => {
+
+        const {idPersonne} = await getIdCurrentPpl()
+
+        if (idPersonne && startDate && endDate &&  killometers && paramsLocation) {
+
+            console.log(idPersonne, startDate, endDate, killometers)
+
+            const data = {
+                "idPersonne": idPersonne,
+                "dateDebut": startDate,
+                "dateFin": endDate,
+                "kmContrat": parseInt(killometers),
+                "idOffre": paramsLocation.idOffre,
+                "idVehicule" : paramsCar.idVehicule,
+                "image" : paramsCar.image,
+                "pointRetrait" : paramsCar.agence,
+                "prix" : price
+            }
+
+            console.log(data)
+            navigate("/validation_commande", {state: data})
+        }
+
+            /* const reqPostCommande = await fetch('http://139.162.191.134:8080/api/contrat', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            const respPostCommande = await reqPostCommande.json()
+            if (respPostCommande.id) {
+                validateMessage("Contrat bien crée", "ok" , `/my-orders/${respPostCommande.id}`, 1000)
+            } else {
+                validateMessage("Une erreur est survenue", "pas ok", 0)
+            }
+        } */
+        else {
+            validateMessage("Vous devez remplir tous les champs", "pas ok" , 0)
+        }
+    }
+
+    useEffect(() => {
+
+        if (Object.keys(paramsLocation).length > 0) {
+
+            let nbr;
+            if (startDate === endDate) {
+                nbr = 1
+            } else {
+                const timeStampStart = new Date(startDate.replaceAll("-"," ")).getTime()
+                const timeStampEnd = new Date(endDate.replaceAll("-"," ")).getTime()
+
+                const differenceTimeStamp = timeStampEnd - timeStampStart
+                nbr = Math.ceil(differenceTimeStamp / (1000 * 3600 * 24))
+            }
+            const priceDays = nbr * paramsLocation.prixParJour
+            const priceKms = killometers * paramsLocation.prixParKm
+            setPrice(priceDays + priceKms)
+        }
+
 
     }, [startDate, endDate, killometers])
 
@@ -137,19 +269,8 @@ const MoreInfoCar = () => {
     }
 
 
-    const {image, description, agence} = paramsCar
+    const {image, description} = paramsCar
 
-    const listCommandeVehicle = ListCommandes.filter(commande => commande.idVehicle === params.currID)
-
-    const listEvents = listCommandeVehicle.map(element => (
-        {
-            "id" : element.idContrat,
-            "start" : element.dateDebut,
-            "end" : element.dateFin,
-            "title" : `Déjà réservé`,
-            allDay : true,
-        }
-    ))
 
 
     if (paramsCar.message) {
@@ -181,19 +302,22 @@ const MoreInfoCar = () => {
                     {
                         !startDate && !endDate
                         ?
-                        <FullCalendar
-                            plugins={[ dayGridPlugin, interactionPlugin ]}
-                            initialView="dayGridMonth"
-                            locale={frLocale}
-                            eventColor='red'
-                            selectable={true}
-                            selectLongPressDelay={100}
-                            dateClick={(clickedInfo) => handleClickDate(clickedInfo)}
-                            select={(selectInfo) => handleSelectDate(selectInfo)}
-                            events={listEvents}
-                            eventMinHeight={80}
-                            validRange={validRange}
-                        />
+                            <div style={{width : "80%", marginLeft : "auto", marginRight : "auto"}}>
+                                <FullCalendar
+                                    plugins={[ dayGridPlugin, interactionPlugin ]}
+                                    initialView="dayGridMonth"
+                                    locale={frLocale}
+                                    eventColor='red'
+                                    selectable={true}
+                                    selectLongPressDelay={100}
+                                    dateClick={(clickedInfo) => handleClickDate(clickedInfo)}
+                                    select={(selectInfo) => handleSelectDate(selectInfo)}
+                                    events={listEvents}
+                                    eventMinHeight={80}
+                                    validRange={validRange}
+                                />
+                            </div>
+
                             : <div style={{width : "60%", marginRight : "auto", marginLeft : "auto", display : "flex", alignItems : "center", justifyContent : "center"}}>
                                 <h3 style={{color : "white"}}>Vous avez sélectionner les dates suivantes : {startDate} / {endDate}</h3>
                                 <img src={Deleteicon} style={{width : "24px", marginLeft : "15px"}} onClick={() => {
@@ -215,8 +339,10 @@ const MoreInfoCar = () => {
                     <div>
                         <h2 style={{color : "white"}}>{`${price.toFixed(2).toString()}€ TTC`}</h2>
                     </div>
-                    <div style={{marginTop : "16px", marginBottom : "16px", maxWidth : "720px", marginLeft : "auto", marginRight : "auto"}}>
-                        <Link to="/validation_commande" state={{...{pointRetrait,startDate,endDate,killometers,price}, ...location.state}}><ButtonReservation height={40} msg="Continuer"/></Link>
+                    <div style={{marginTop : "16px", marginBottom : "16px", maxWidth : "720px", marginLeft : "auto", marginRight : "auto"}} onClick={() => handleSubmit()}>
+                        {/* <Link to="/validation_commande" state={{...{pointRetrait,startDate,endDate,killometers,price}, ...location.state}}> */}
+                            <ButtonReservation height={40} msg="Continuer"/>
+                        {/* </Link> */}
                     </div>
                 </ContainerInputMui>
             </StandarContainers>

@@ -10,6 +10,7 @@ import {ButtonReservation} from "../components";
 import {Link} from "react-router-dom";
 import styled from "styled-components";
 import DefaultImg from "../img/aide-achat-voiture-hydrogene_280219.jpg";
+import {useMessageStateClient} from "../context/MessageStateClient";
 
 const ContainerReturn = styled.div`
     display: flex;
@@ -53,13 +54,37 @@ const H5 = styled.h5`
 const RecapCommande = () => {
 
     const location = useLocation()
-    const navigate = useNavigate()
-    const {endDate,image,killometers,pointRetrait,startDate,price} = location.state
+    const {validateMessage} = useMessageStateClient()
+    const {dateDebut,dateFin,idOffre,idPersonne,idVehicule,image,kmContrat,pointRetrait, prix} = location.state
+
+    const handleSubmit = async () => {
+        const data = {
+            "idPersonne" : idPersonne,
+            "dateDebut" : dateDebut,
+            "dateFin" : dateFin,
+            "kmContrat" : kmContrat,
+            "state" : 3,
+            "idOffre" : idOffre
+        }
+        const reqPostCommande = await fetch('http://139.162.191.134:8080/api/contrat', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        const result = await reqPostCommande.json()
+        if (result.id) {
+            validateMessage("Redirection vers le paiement !", "info", `/payment/${result.id}`, 1000)
+        } else {
+            validateMessage("Une erreur est survenue", "pas ok", 0)
+        }
+    }
 
     return (
         <div style={{textAlign : "center", marginTop : "32px"}}>
             <ContainerReturn>
-                <img onClick={() => navigate(-1, {"previousData" : {endDate, pointRetrait, startDate, killometers}})} src={ChevronBackWhite} alt="retour arrière"/>
                 <h2 style={{color : "white"}}>Récapitulatif commande</h2>
             </ContainerReturn>
             <ContainerRecapCommande>
@@ -75,10 +100,10 @@ const RecapCommande = () => {
                     </div>
                     <H5>
 
-                        {`Agence de ${pointRetrait}`}
+                        {`Agence de ${pointRetrait === 0 ? "Paris" : "Lyon"}`}
                         <br/>
                         {
-                            pointRetrait === "paris"
+                            pointRetrait === 0
                             ?
                                 <>51 Rue Jouffroy d'Abbans, Paris</>
                             :
@@ -92,7 +117,7 @@ const RecapCommande = () => {
                     </div>
                     <H5>
                         {
-                            `${startDate.replace('T', ' ')} > ${endDate.replace('T', ' ')}`
+                            `${dateDebut.replace('T', ' ')} > ${dateFin.replace('T', ' ')}`
                         }
                     </H5>
                 </ContainerItems>
@@ -102,12 +127,12 @@ const RecapCommande = () => {
                     </div>
                     <H5>
                         {
-                            killometers + " km"
+                            kmContrat + " km"
                         }
                     </H5>
                 </ContainerItems>
-                <div style={{marginTop : "32px", width : "80%", maxWidth : "720px", marginLeft : "auto", marginRight : "auto", paddingBottom : "20px"}}>
-                    <Link to="/payment"><ButtonReservation height={40} msg={`Payer - ${price} €`} /></Link>
+                <div style={{marginTop : "32px", width : "80%", maxWidth : "720px", marginLeft : "auto", marginRight : "auto", paddingBottom : "20px"}} onClick={() => handleSubmit()}>
+                    <ButtonReservation height={40} msg={`Confimer et Payer - ${prix} €`} />
                 </div>
             </ContainerRecapCommande>
         </div>

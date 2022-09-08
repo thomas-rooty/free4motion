@@ -1,5 +1,5 @@
 import {Link} from "react-router-dom";
-import {BoxCar} from "../components";
+import {BoxCar, ButtonReservation} from "../components";
 import {useEffect, useState} from "react";
 import {ContainerHomePage} from "./HomeContainerListCars";
 import {StandarContainers} from "./Containers";
@@ -58,7 +58,8 @@ const BackOfficeAdminVehicles = () => {
     return(
         <ContainerHomePage>
             <h1 style={{color : "white"}}>BackOfficeAdmin</h1>
-            <Link to="/free_admin/add_vehicle"><button>Ajouter une voiture</button></Link>
+
+            <div style={{width : "20%"}}><Link to="/free_admin/add_vehicle"><ButtonReservation msg="Ajouter une voiture" height={45}>Ajouter une voiture</ButtonReservation></Link></div>
 
             <div>
                 <StandarContainers>

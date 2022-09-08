@@ -6,12 +6,11 @@ import {ButtonReservation} from "../components";
 import {useMessageStateClient} from "../context/MessageStateClient";
 import {ContainerInputMui} from "./MoreInfoCar";
 import {LabelCustom} from "./Register";
-import BackWhite from '../img/backWhite.png'
 
 const BackOfficeAddCar = () => {
 
     const newDate = new Date()
-    const {validateMessage, showLoadingMessage} = useMessageStateClient()
+    const {validateMessage} = useMessageStateClient()
 
     const [brand, setBrand] = useState("")
     const [model, setModel] = useState("")
@@ -58,7 +57,7 @@ const BackOfficeAddCar = () => {
             })
             const result = await req.json()
             if (result.id) {
-                validateMessage("Voiture bien ajouté !", "ok", -1)
+                validateMessage("Voiture bien ajouté !", "ok", "/free_admin/vehicles")
             } else {
                 validateMessage("Erreur lors de l'ajout du véhicule", "pas ok", 0)
             }

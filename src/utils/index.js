@@ -14,13 +14,6 @@ export const formatDateToDateTime = (date) => {
     return result
 }
 
-export const CHECKLOCALTOKEN = () => {
-    return !!localStorage.getItem("token");
-}
-export const GETLOCALTOKEN = () => {
-    return localStorage.getItem("token")
-}
-
 export const priceByKm = 0.22
 export const priceByDays = 42.00
 

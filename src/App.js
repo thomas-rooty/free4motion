@@ -40,12 +40,12 @@ function App() {
                                   </ContextHomePageProvider>
                               </FullContainers>
                           }/>
-                          <Route path="/shop-car/:currID" element={
-                              <MoreInfoCar/>
-                          }/>
                           <Route element={<PrivateRoutes roleNeeded={[0,1]} msgRedirect="adminNotAccess"/>}>
                               <Route path="/validation_commande" element={
                                   <RecapCommande/>
+                              }/>
+                              <Route path="/shop-car/:currID" element={
+                                  <MoreInfoCar/>
                               }/>
                               <Route path="/my-orders" element={
                                   <ListUserCommandes/>

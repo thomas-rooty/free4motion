@@ -1,4 +1,4 @@
-import x from '../datatest/users.json'
+
 import {StandarContainers} from "./Containers";
 import BoxUser from "../components/BoxUser";
 import {useEffect, useState} from "react";
@@ -12,8 +12,19 @@ const BackOfficeUsers = () => {
     const [data, setData] = useState([])
     const [filter, setFilter] = useState("")
 
+    const fetchAllUsers = async () => {
+
+        const req = await fetch(`http://139.162.191.134:8080/api/users`)
+        const result = await req.json()
+
+        setData(result)
+
+    }
+
     useEffect(() => {
-        setData(x)
+
+        fetchAllUsers()
+
     }, [])
 
 
@@ -23,7 +34,9 @@ const BackOfficeUsers = () => {
         setData(newData)
     }
 
-    const FilterData = !filter ? data : data.filter(element => element.prenom.toLowerCase().includes(filter.toLowerCase()) || element.nom.toLowerCase().includes(filter.toLowerCase()))
+    const filterData = !filter ? data : data.filter(element => element.prenom.toLowerCase().includes(filter.toLowerCase()) || element.nom.toLowerCase().includes(filter.toLowerCase()))
+
+    console.log(filterData)
 
     return(
 
@@ -38,8 +51,8 @@ const BackOfficeUsers = () => {
             </div>
 
             {
-                FilterData.map(
-                    user => <BoxUser key={user.idPersonne} prenom={user.prenom} id={user.idPersonne} naissance={user.naissance} adresse={user.adresse} nom={user.nom} numeroPermis={user.numeroPermis} handleChange={handleChangeData}/>
+                filterData.map(
+                    user => user.role !== 1 && <BoxUser key={user.idPersonne} data={user} handleChange={handleChangeData}/>
                 )
             }
         </StandarContainers>

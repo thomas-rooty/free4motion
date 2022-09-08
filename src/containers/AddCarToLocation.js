@@ -57,7 +57,7 @@ const AddCarToLocation = () => {
         const resp = await reqPostLocation.json()
 
         if (resp.id) {
-            validateMessage("Location bien ajouté, merci", "ok")
+            validateMessage("Location bien ajouté, merci", "ok", -1)
         }
 
     }
@@ -98,7 +98,7 @@ const AddCarToLocation = () => {
                 </div>
             </div>
             <div style={{marginTop : "32px", width : "70%", marginLeft : "auto", marginRight : "auto"}} onClick={() => {
-                handleSubmitAddLocation(id).catch(validateMessage("Erreur ! merci de réessayer" , "pas ok"))
+                handleSubmitAddLocation(id)
             }}>
                 <ButtonReservation msg="Ajouter à la location" height={35} />
             </div>

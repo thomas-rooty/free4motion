@@ -5,6 +5,8 @@ import {useNavigate} from "react-router-dom";
 
 
 
+
+
 const MessageStateClient = createContext()
 
 export const MessageStateClientProvider = ({children}) => {
@@ -23,7 +25,7 @@ export const MessageStateClientProvider = ({children}) => {
     }
 
 
-    const validateMessage = (msg, state = "ok", goTo = -1) => {
+    const validateMessage = (msg, state = "ok", goTo = -1, timer) => {
 
         Swal.close()
 
@@ -41,7 +43,8 @@ export const MessageStateClientProvider = ({children}) => {
             Swal.fire({
                 "title" : "INFORMATION",
                 text : msg,
-                icon : "info"
+                icon : "info",
+                timer : timer ? timer : undefined
             }).then(
                 () => {
                     goTo && goTo !== 0 && navigate(goTo)
@@ -52,7 +55,11 @@ export const MessageStateClientProvider = ({children}) => {
                 title: "OOPS !",
                 text: msg,
                 icon: "error",
-            })
+            }).then(
+                () => {
+                    goTo && goTo !== 0 && navigate(goTo)
+                }
+            )
         }
 
     }

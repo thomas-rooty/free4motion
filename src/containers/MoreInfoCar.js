@@ -2,10 +2,18 @@ import {useLocation, Link, useParams, useNavigate} from "react-router-dom";
 import {StandarContainers} from "./Containers";
 import {Input, InputLabel, MenuItem, Select} from "@mui/material";
 import {useEffect, useState} from "react";
-import {formatDateToDateTime, priceByKm, priceByDays, CHECKLOCALTOKEN, styleForSelectMui, styleInputMui} from '../utils'
+import {priceByKm, priceByDays,styleInputMui} from '../utils'
 import {ButtonReservation} from "../components";
 import {useMessageStateClient} from "../context/MessageStateClient";
 import styled from "styled-components";
+import DefaultImg from "../img/aide-achat-voiture-hydrogene_280219.jpg";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import frLocale from "@fullcalendar/core/locales/fr";
+import Deleteicon from '../img/remove.png'
+import ListCommandes from '../datatest/contrat.json'
+import {useContextAuth} from "../context/ContextAuth";
 
 const H3 = styled.h3`
     color : white;
@@ -22,27 +30,34 @@ export const ContainerInputMui = styled.div`
     min-width: ${props => props.width ? props.width + "%" : "35%" };
     text-align: ${props => props.textCenter && "center"};
 `;
-
+const ContainerFullCalendar = styled.div`
+    color: white;
+  
+  & .fc-event {
+    height: 60px !important;
+  }
+`;
 
 
 const MoreInfoCar = () => {
 
+    console.log('jo')
+
     const {validateMessage} = useMessageStateClient()
+    const {role, setLastNavigate} = useContextAuth()
 
     const location = useLocation()
     const params = useParams()
     const navigate = useNavigate()
 
+    const validRange = {
+        "start" : new Date()
+    }
 
-    const myDate = new Date()
-    const {userAgent} = navigator
-
-
-    const currentUserAgent = !!userAgent.match(/firefox|fxios/i)
 
     const [pointRetrait, setPointRetrait] = useState(0)
-    const [startDate, setStartDate ] = useState(formatDateToDateTime(myDate))
-    const [endDate, setEndDate] = useState(formatDateToDateTime(myDate))
+    const [startDate, setStartDate ] = useState("")
+    const [endDate, setEndDate] = useState("")
     const [killometers, setKillometers] = useState(100)
     const [price, setPrice] = useState(0)
     const [paramsCar, setParamsCar] = useState({})
@@ -53,9 +68,35 @@ const MoreInfoCar = () => {
         setParamsCar(data)
     }
 
-    const handleSubmitParams = () => {
+    const handleSelectDate = (infos) => {
 
-        navigate("/validation_commande")
+
+        if (infos.end.setDate(infos.end.getDate()-1) === infos.start.setDate(infos.start.getDate())) {
+            return
+        } else {
+            const checkStart = listEvents.filter(element => infos.start.getTime() >= Date.parse(element.start) && infos.start.getTime() <= Date.parse(element.end))
+            const checkEnd = listEvents.filter(element => infos.end.setDate(infos.end.getDate()+1) >= Date.parse(element.start) && infos.end.setDate(infos.end.getDate()+1) <= Date.parse(element.end))
+
+            if (checkStart.length > 0 || checkEnd.length > 0) {
+                validateMessage("Merci de renseigner des dates disponibles", "pas ok", 0)
+            } else {
+                const dateLessOneDays = infos.end.setDate(infos.end.getDate() + 1)
+                const [newDate] = new Date(dateLessOneDays).toISOString().split("T")
+                setStartDate(infos.startStr + " 07:00")
+                setEndDate(newDate  + " 18:00")
+            }
+        }
+
+
+    }
+    const handleClickDate = (infos) => {
+        const checkIfDateOk = listEvents.filter(element => infos.date.getTime() >= Date.parse(element.start) && infos.date.getTime() <= Date.parse(element.end))
+        if (checkIfDateOk.length > 0) {
+            validateMessage("Merci de renseigner des dates disponibles", "pas ok", 0)
+        } else {
+            setStartDate(infos.dateStr + " 07:00")
+            setEndDate(infos.dateStr  + " 18:00")
+        }
     }
 
     useEffect(() => {
@@ -63,9 +104,8 @@ const MoreInfoCar = () => {
     }, [paramsCar])
 
     useEffect(() => {
-        if (!CHECKLOCALTOKEN()) {
-            validateMessage("Vous devez être connecté pour accéder à cette donnée", "info", "/login")
-        }
+
+        setLastNavigate(location.pathname)
             if (location.state) {
                 setParamsCar(location.state)
             } else {
@@ -75,20 +115,13 @@ const MoreInfoCar = () => {
     }, [])
 
     useEffect(() => {
-        if (new Date(startDate.replaceAll("-"," ").replace("T", " ")).getTime() > new Date(endDate.replaceAll("-"," ").replace("T", " ")).getTime()) {
-            setEndDate(startDate)
-        }
-
-    }, [startDate])
-
-    useEffect(() => {
 
         let nbr;
         if (startDate === endDate) {
             nbr = 1
         } else {
-            const timeStampStart = new Date(startDate.replaceAll("-"," ").replace("T", " ")).getTime()
-            const timeStampEnd = new Date(endDate.replaceAll("-"," ").replace("T", " ")).getTime()
+            const timeStampStart = new Date(startDate.replaceAll("-"," ")).getTime()
+            const timeStampEnd = new Date(endDate.replaceAll("-"," ")).getTime()
 
             const differenceTimeStamp = timeStampEnd - timeStampStart
             nbr = Math.ceil(differenceTimeStamp / (1000 * 3600 * 24)) + 1
@@ -99,119 +132,85 @@ const MoreInfoCar = () => {
 
     }, [startDate, endDate, killometers])
 
-    const handleChangePointRetrait = (e) => {
-        setPointRetrait(e.target.value)
-    }
     const handleChangeKm = (e) => {
         setKillometers(e.target.value)
-    }
-    const handleChangeStartDate = (e, params) => {
-
-        if (currentUserAgent && params) {
-            if (params === "days") {
-                setStartDate(e.target.value + "T" + startDate.split("T")[1])
-            } else if (params === "hours"){
-                setStartDate(startDate.split("T")[0] + "T" + e.target.value)
-            }
-            return
-        }
-        setStartDate(e.target.value)
-
-    }
-    const handleVerifEndDate = () => {
-        if (new Date(startDate.replaceAll("-"," ").replace("T", " ")).getTime() > new Date(endDate.replaceAll("-"," ").replace("T", " ")).getTime()) {
-            setEndDate(startDate)
-        }
-    }
-    const handleChangeEndDate = (e, params) => {
-
-        if (currentUserAgent && params) {
-            if (params === "days") {
-                setEndDate(e.target.value + "T" + startDate.split("T")[1])
-            } else if (params === "hours"){
-                setEndDate(startDate.split("T")[0] + "T" + e.target.value)
-            }
-            return
-        }
-        setEndDate(e.target.value)
-
     }
 
 
     const {image, description, agence} = paramsCar
 
+    const listCommandeVehicle = ListCommandes.filter(commande => commande.idVehicle === params.currID)
+
+    const listEvents = listCommandeVehicle.map(element => (
+        {
+            "id" : element.idContrat,
+            "start" : element.dateDebut,
+            "end" : element.dateFin,
+            "title" : `Déjà réservé`,
+            allDay : true,
+        }
+    ))
+
+
+    if (paramsCar.message) {
+        validateMessage("Véhicule non trouvé avec les informations", "pas ok", "/")
+    } else if (role === 0) {
+        validateMessage("Vous devez être connecté pour accéder à cette donnée", "info", "/login")
+    }
+
 
     return(
         <div style={{marginTop : "46px"}}>
             <ContainerImg>
-                <img src={Object.keys(paramsCar).length > 0 && image ? image : "https://www.h2-mobile.fr/img/post-h2/aide-achat-voiture-hydrogene_280219.jpg"} style={{width : "100%", height : "100%"}} alt="voiture récap"/>
+                <img src={Object.keys(paramsCar).length > 0 && image ? image : "https://www.h2-mobile.fr/img/post-h2/aide-achat-voiture-hydrogene_280219.jpg"} alt="votre voiture" style={{width : "80%", height : "80%", marginTop : "16px"}} onError={({currentTarget}) => {
+                    currentTarget.onerror= null;
+                    currentTarget.src= DefaultImg
+                }}/>
+
             </ContainerImg>
-            <StandarContainers>
-
-                <div style={{display : "flex", justifyContent : "space-around", flexFlow : "row wrap"}}>
-                    <ContainerInputMui width={85}>
-                        <div style={{marginTop : "48px"}}>
-                            <H3>Description</H3>
-                        </div>
-                        <div style={{marginTop : "16px"}}>
-                            <h5 style={{color : "#747474"}}>{Object.keys(paramsCar).length > 0 && description ? description : ""}</h5>
-                        </div>
-                    </ContainerInputMui>
-                    <ContainerInputMui>
-                        <InputLabel id="select-point-retrait-label" style={{color : "#747474", fontFamily : "Inter"}}>Votre point de retrait</InputLabel>
-                        <Select
-                            id="select-point-retrait"
-                            labelId="select-point-retrait-label"
-                            value={pointRetrait}
-                            fullWidth
-                            onChange={(e) => handleChangePointRetrait(e)}
-                            sx={styleForSelectMui}
-                        >
-                            {
-                                Object.keys(paramsCar).length > 0 && agence === 0
-                                    ?
-                                    <MenuItem value={0}>Agence de Paris</MenuItem>
-                                    : agence === 1 &&
-                                    <MenuItem value={1}>Agence de Lyon</MenuItem>
-                            }
-                        </Select>
-                    </ContainerInputMui>
-                    <ContainerInputMui>
-                        <label htmlFor="form-input-date-start" style={{color : "#747474", display: "block"}}>Date début</label>
-                        {
-                            currentUserAgent
-                                ?
-                                <div>
-
-                                    <Input id="form-input-date-start" type="date" fullWidth sx={styleInputMui} value={startDate.split("T")[0]} inputProps={{min : formatDateToDateTime(myDate).split('T')[0]}} onChange={(e) => handleChangeStartDate(e, "days")}/>
-                                    <Input id="form-input-times-start" type="time" fullWidth sx={styleInputMui} value={startDate.split("T")[1]}  onChange={(e) => handleChangeStartDate(e, "hours")}/>
-                                </div>
-                                :
-                                <Input id="form-input-date-start" type="datetime-local" fullWidth sx={styleInputMui} value={startDate}  inputProps={{min : formatDateToDateTime(myDate)}} onChange={(e) => handleChangeStartDate(e)}/>
-                        }
-                    </ContainerInputMui>
-                    <ContainerInputMui>
-                        <label htmlFor="form-input-date-end" style={{color : "#747474", display: "block"}}>Date fin</label>
-                        {
-                            currentUserAgent
-                                ?
-                                <div>
-                                    <Input id="form-input-date-end" type="date" fullWidth sx={styleInputMui} inputProps={{min : startDate.split('T')[0]}} value={endDate.split("T")[0]} onChange={(e) => handleChangeEndDate(e, "days")}/>
-                                    <Input id="form-input-times-end" type="time" fullWidth sx={styleInputMui} value={endDate.split("T")[1]} onChange={(e) => handleChangeEndDate(e, "hours")}/>
-                                </div>
-                                :
-                                <Input id="form-input-date-end"  type="datetime-local" fullWidth onBlur={() => handleVerifEndDate()} inputProps={{min : startDate }} sx={{
-                                    color : "white",
-                                    colorScheme: "dark",
-                                    ':after': { borderBottomColor: '#44C034' },
-                                }} value={endDate} onChange={(e) => handleChangeEndDate(e)}/>
-                        }
-                    </ContainerInputMui>
-                    <ContainerInputMui>
-                        <label htmlFor="form-input-km" style={{color : "#747474", display: "block"}}>Distance</label>
-                        <Input id="form-input-km" type="number" fullWidth placeholder="En kilomètre" sx={styleInputMui} value={killometers} onChange={(e) => handleChangeKm(e)}/>
-                    </ContainerInputMui>
+            <div style={{width : "60%", marginRight : "auto", marginLeft : "auto"}}>
+                <div style={{marginTop : "48px"}}>
+                    <H3>Description</H3>
                 </div>
+                <div style={{marginTop : "16px"}}>
+                    <h5 style={{color : "#747474"}}>{Object.keys(paramsCar).length > 0 && description ? description : ""}</h5>
+                </div>
+            </div>
+            <StandarContainers style={{marginTop : "32px"}}>
+                <ContainerFullCalendar>
+                    {
+                        !startDate && !endDate
+                        ?
+                        <FullCalendar
+                            plugins={[ dayGridPlugin, interactionPlugin ]}
+                            initialView="dayGridMonth"
+                            locale={frLocale}
+                            eventColor='red'
+                            selectable={true}
+                            selectLongPressDelay={100}
+                            dateClick={(clickedInfo) => handleClickDate(clickedInfo)}
+                            select={(selectInfo) => handleSelectDate(selectInfo)}
+                            events={listEvents}
+                            eventMinHeight={80}
+                            validRange={validRange}
+                        />
+                            : <div style={{width : "60%", marginRight : "auto", marginLeft : "auto", display : "flex", alignItems : "center", justifyContent : "center"}}>
+                                <h3 style={{color : "white"}}>Vous avez sélectionner les dates suivantes : {startDate} / {endDate}</h3>
+                                <img src={Deleteicon} style={{width : "24px", marginLeft : "15px"}} onClick={() => {
+                                    setEndDate("")
+                                    setStartDate("")
+                                }
+                                }/>
+                                </div>
+                    }
+                    <div style={{display : "flex", justifyContent : "space-around", flexFlow : "row wrap"}}>
+                        <ContainerInputMui>
+                            <label htmlFor="form-input-km" style={{color : "#747474", display: "block"}}>Distance</label>
+                            <Input id="form-input-km" type="number" fullWidth placeholder="En kilomètre" sx={styleInputMui} value={killometers} onChange={(e) => handleChangeKm(e)}/>
+                        </ContainerInputMui>
+                    </div>
+                </ContainerFullCalendar>
+
                 <ContainerInputMui textCenter={true}>
                     <div>
                         <h2 style={{color : "white"}}>{`${price.toFixed(2).toString()}€ TTC`}</h2>

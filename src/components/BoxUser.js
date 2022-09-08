@@ -1,6 +1,6 @@
 
 import styled from "styled-components";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 import EditImg from '../img/edit.png'
 import ChevronDown from '../img/down-arrow.png'
@@ -10,6 +10,11 @@ import {ContainerInputMui} from "../containers/MoreInfoCar";
 import {LabelCustom} from "../containers/Register";
 import {Input} from "@mui/material";
 import {styleInputMui} from "../utils";
+
+import ListContrats from '../datatest/contrat.json'
+import BoxCommandeAdmin from "./BoxCommandeAdmin";
+import addWhite from '../img/addWhite.png'
+import {Link} from "react-router-dom";
 
 const ContainerDiv = styled.div`
   width: 80%;
@@ -39,7 +44,7 @@ const ContainerUserBox = styled.div`
 
 `;
 
-const H4 = styled.h4`
+export const H4 = styled.h4`
     font-size: 12px;
     color: #747474;
 `;
@@ -55,6 +60,17 @@ const BoxUser = ({id, nom, prenom, naissance, adresse, numeroPermis, handleChang
     const [showCommands, setUserShowCommands] = useState(false)
     const {validateMessage} = useMessageStateClient()
 
+    const [contratsPpl, setContratsPpl] = useState([])
+
+
+
+    useEffect(() => {
+
+
+        setContratsPpl(ListContrats.filter(element => element.idPersonne === id))
+
+    }, [])
+
     const handleEditUser = () => {
 
 
@@ -62,6 +78,7 @@ const BoxUser = ({id, nom, prenom, naissance, adresse, numeroPermis, handleChang
             setUserWantEdit(false)
             validateMessage("Modification bien sauvegarder" , "ok", 0)
         }, 1000)
+
 
     }
 
@@ -99,7 +116,7 @@ const BoxUser = ({id, nom, prenom, naissance, adresse, numeroPermis, handleChang
                                         <h2>{numeroPermis}</h2>
                                     </div>
                                 </div>
-                                <img src={EditImg} onClick={() => {setUserWantEdit(true)}}/>
+                                <img src={EditImg} onClick={() => {setUserWantEdit(true)}} style={{width : "32px"}}/>
                                 <ContainerImg rotate={showCommands} onClick={() => {setUserShowCommands(prevState => prevState === false)}}>
                                     <img src={ChevronDown}/>
                                 </ContainerImg>
@@ -127,7 +144,7 @@ const BoxUser = ({id, nom, prenom, naissance, adresse, numeroPermis, handleChang
                             </div>
 
                             <img src={Validate} onClick={() => {handleEditUser()}}/>
-                            <ContainerImg rotate={showCommands} onClick={() => {setUserShowCommands(prevState => prevState === false)}}>
+                            <ContainerImg rotate={showCommands && true} onClick={() => {setUserShowCommands(prevState => prevState === false)}}>
                                 <img src={ChevronDown}/>
                             </ContainerImg>
 
@@ -140,9 +157,19 @@ const BoxUser = ({id, nom, prenom, naissance, adresse, numeroPermis, handleChang
             </ContainerUserBox>
             {
                 showCommands
-                && <div style={{textAlign : "center", alignItems : "center", marginTop : "16px", minHeight : "400px"}}>
+                &&
+                <div style={{textAlign : "center", alignItems : "center", marginTop : "16px"}}>
+                    {
+                        contratsPpl.map(
+                            contrat =>
+                                <BoxCommandeAdmin key={contrat.idContrat} info={contrat} />
+
+                        )
+                    }
+                    <Link to={`/free_admin/add_commande/${id}`}><img src={addWhite} style={{marginTop : "24px", width : "24px"}}/></Link>
                 </div>
             }
+
         </ContainerDiv>
 
 

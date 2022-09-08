@@ -3,12 +3,15 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import GlobalStyle from "./globalStyles";
+import {ContextAuthProvider} from "./context/ContextAuth";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
       <React.Fragment>
-          <GlobalStyle/>
-          <App />
+          <ContextAuthProvider>
+              <GlobalStyle/>
+              <App />
+          </ContextAuthProvider>
       </React.Fragment>
 );
 

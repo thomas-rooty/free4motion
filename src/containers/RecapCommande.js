@@ -64,7 +64,7 @@ const RecapCommande = () => {
             </ContainerReturn>
             <ContainerRecapCommande>
                 <ContainerImg>
-                    <img src={image} alt="votre voiture" style={{width : "80%", height : "80%", marginTop : "16px"}} onError={({currentTarget}) => {
+                    <img src={image ? image : "https://www.h2-mobile.fr/img/post-h2/aide-achat-voiture-hydrogene_280219.jpg"} alt="votre voiture" style={{width : "80%", height : "80%", marginTop : "16px"}} onError={({currentTarget}) => {
                         currentTarget.onerror= null;
                         currentTarget.src= DefaultImg
                     }}/>

@@ -18,7 +18,6 @@ const AddCarToLocation = () => {
 
     const [prixKm , setPrixKm] = useState("0.00")
     const [prixByDays, setPrixByDays] = useState("0.00")
-    const [pointRetrait, setPointRetrait] = useState(0)
     const [paramsCar, setParamsCar] = useState({})
 
     const fetchByIdInfo = async (id) => {
@@ -44,7 +43,6 @@ const AddCarToLocation = () => {
             "idVehicule" : id,
             "prixParKm" : parseFloat(prixKm),
             "prixParJour" : parseFloat(prixByDays),
-            "agence" : pointRetrait
         }
 
         const reqPostLocation = await fetch('http://139.162.191.134:8080/api/offre', {
@@ -97,19 +95,6 @@ const AddCarToLocation = () => {
                 <div style={{marginTop : "32px"}}>
                     <LabelCustom htmlFor="form-input-km">Prix par jour</LabelCustom>
                     <Input id="form-input-km" type="number" sx={styleInputMui} value={prixByDays} onChange={(e) => handleChangeValueDays(e)}/>
-                </div>
-                <div style={{marginTop : "32px"}}>
-                    <InputLabel id="select-point-retrait-label" style={{color : "#747474", fontFamily : "Inter"}}>L'agence du véhicule</InputLabel>
-                    <Select
-                        id="select-point-retrait"
-                        labelId="select-point-retrait-label"
-                        value={pointRetrait}
-                        onChange={(e) => setPointRetrait(e.target.value)}
-                        sx={styleForSelectMui}
-                    >
-                        <MenuItem value={0}>Agence de Paris</MenuItem>
-                        <MenuItem value={1}>Agence de Lyon</MenuItem>
-                    </Select>
                 </div>
             </div>
             <div style={{marginTop : "32px", width : "70%", marginLeft : "auto", marginRight : "auto"}} onClick={() => {

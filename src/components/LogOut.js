@@ -1,15 +1,15 @@
 import {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
-import {useContextMenu} from "../context/ContextMenu";
+import {useContextAuth} from "../context/ContextAuth";
 
 const LogOut = () => {
 
     const navigate = useNavigate()
-    const {logout} = useContextMenu()
+    const {logout} = useContextAuth()
 
     useEffect(() => {
         logout()
-        navigate(-1)
+        navigate("/")
     }, [])
 }
 export default LogOut

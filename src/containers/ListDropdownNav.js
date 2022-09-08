@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import {Link} from "react-router-dom";
-import {useContextMenu} from "../context/ContextMenu";
+import {useContextAuth} from "../context/ContextAuth";
 
 const CustomUl = styled.ul`
     padding-inline-start: 0px;
@@ -21,7 +21,7 @@ const CustomUl = styled.ul`
 
 const ListDropdownNav = () => {
 
-    const {role} = useContextMenu()
+    const {role} = useContextAuth()
     console.log(role)
     
     return(

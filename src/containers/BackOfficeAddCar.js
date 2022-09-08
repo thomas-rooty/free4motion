@@ -6,6 +6,7 @@ import {ButtonReservation} from "../components";
 import {useMessageStateClient} from "../context/MessageStateClient";
 import {ContainerInputMui} from "./MoreInfoCar";
 import {LabelCustom} from "./Register";
+import BackWhite from '../img/backWhite.png'
 
 const BackOfficeAddCar = () => {
 
@@ -24,6 +25,8 @@ const BackOfficeAddCar = () => {
     const [description, setDescription] = useState("")
     const [image, setImage] = useState("")
 
+    const [pointRetrait, setPointRetrait] = useState(0)
+
     const handleSubmitAddCar = async () => {
 
 
@@ -41,7 +44,7 @@ const BackOfficeAddCar = () => {
                 "prixAchat" : purcahsePrice,
                 "type" : type,
                 "image" : image,
-                "agence" : 0,
+                "agence" : pointRetrait,
                 "marque" : brand
             }
 
@@ -116,7 +119,7 @@ const BackOfficeAddCar = () => {
                             sx={styleForSelectMui}
                         >
                             <MenuItem value="car">Voiture</MenuItem>
-                            <MenuItem value="trotinette">Trotinette</MenuItem>
+                            <MenuItem value="trotinette">Trottinette</MenuItem>
                         </Select>
                     </ContainerInputMui>
                     <ContainerInputMui>
@@ -126,6 +129,21 @@ const BackOfficeAddCar = () => {
                     <ContainerInputMui>
                         <label htmlFor="form-input-description" style={{color : "#747474", display: "block"}}>Url de votre image</label>
                         <Input id="form-input-description" type="text" fullWidth={true} placeholder="https://img.freepik.com/photos-premium/voiture-sport-sans-marque-generique-rouge-fond-coucher-soleil_110488-1890.jpg?w=2000" sx={styleInputMui} value={image} onChange={(e) => setImage(e.target.value)}/>
+                    </ContainerInputMui>
+                    <ContainerInputMui>
+                        <div style={{marginTop : "32px"}}>
+                            <InputLabel id="select-point-retrait-label" style={{color : "#747474", fontFamily : "Inter"}}>L'agence du véhicule</InputLabel>
+                            <Select
+                                id="select-point-retrait"
+                                labelId="select-point-retrait-label"
+                                value={pointRetrait}
+                                onChange={(e) => setPointRetrait(e.target.value)}
+                                sx={styleForSelectMui}
+                            >
+                                <MenuItem value={0}>Agence de Paris</MenuItem>
+                                <MenuItem value={1}>Agence de Lyon</MenuItem>
+                            </Select>
+                        </div>
                     </ContainerInputMui>
                 </div>
                 <div style={{width : "80%", marginTop : "32px", marginLeft : "auto", marginRight : "auto"}} onClick={() => handleSubmitAddCar()}>

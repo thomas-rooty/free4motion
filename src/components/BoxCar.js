@@ -24,6 +24,7 @@ const BoxCar = ({image, marque, modele,id, description, plaque, agence, msg, Veh
             method : "DELETE"
         })
         const data = await req.json()
+        console.log(data)
         if (data.message) {
             validateMessage("Véhicule bien supprimé", "ok", 0)
             if (type === "add") {

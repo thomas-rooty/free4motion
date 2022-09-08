@@ -1,18 +1,18 @@
 import {useEffect, useState} from "react";
-import {LOGIN, LOGOUT, styleInputMui} from "../utils";
+import {styleInputMui} from "../utils";
 import {Input} from "@mui/material";
 import {StandarContainers} from "./Containers";
 import {ButtonReservation} from "../components";
 import {useMessageStateClient} from "../context/MessageStateClient";
 import {Link} from "react-router-dom";
-import {useContextMenu} from "../context/ContextMenu";
 import {LabelCustom} from "./Register";
 import {ContainerInputMui} from "./MoreInfoCar";
+import {useContextAuth} from "../context/ContextAuth";
 
 const Login = () => {
 
     const {validateMessage} = useMessageStateClient()
-    const {lastNavigate, login , logout} = useContextMenu()
+    const {lastNavigate, login , logout} = useContextAuth()
 
     useEffect(() => {
         logout()
@@ -21,12 +21,12 @@ const Login = () => {
     const [userName, setUserName] = useState("")
     const [passWord, setPassWord] = useState("")
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
 
-        setTimeout(() => {
-            validateMessage("Vous êtes bien connectés", "ok", lastNavigate ? lastNavigate : "/")
-            login("1T3NF")
-        }, 1000)
+        const req = await fetch(`http://139.162.191.134:8080/api/login?email=${userName}&pwd=${passWord}`)
+        const data = await req.text()
+        validateMessage("Vous êtes bien connectés", "ok", lastNavigate ? lastNavigate : "/")
+        login(data)
     }
 
     return(
@@ -40,7 +40,7 @@ const Login = () => {
                     <LabelCustom htmlFor="form-input-brand">Votre mot de passe</LabelCustom>
                     <Input id="form-input-brand" fullWidth type="password" placeholder="*****" sx={styleInputMui} value={passWord} onChange={(e) => setPassWord(e.target.value)}/>
                 </ContainerInputMui>
-                <div style={{marginTop : "32px", width : "70%", marginLeft : "auto", marginRight : "auto"}} onClick={() => handleLogin()}>
+                <div style={{marginTop : "32px", width : "70%", marginLeft : "auto", marginRight : "auto"}} onClick={() => handleLogin().catch(() => validateMessage("Erreur lors de la connexion", "pas ok", 0))}>
                     <ButtonReservation msg="se connecter" height={42}/>
                 </div>
 

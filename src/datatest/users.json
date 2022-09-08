@@ -9,7 +9,8 @@
     "numeroPermis" : 4151515155,
     "numeroCb" : 4344212414,
     "adresseFacturation" : "12 rue de rebercourt 28170 Tremblay-les-villages",
-    "role" : 1
+    "role" : 1,
+    "email" : "arthomas2878@gmail.com"
   },
   {
   "idPersonne" : 1,
@@ -21,6 +22,7 @@
   "numeroPermis" : 155251525,
   "numeroCb" : 4344215215152414,
   "adresseFacturation" : "12 rue de versailles 78000 Versailles",
-  "role" : 2
+  "role" : 2,
+    "email" : "thomas.caron@gmail.com"
 }
 ]

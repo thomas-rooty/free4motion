@@ -46,8 +46,11 @@ const Register = () => {
                 body: JSON.stringify(dataToPost)
             })
             const result = await req.json()
-            console.log(result)
-
+            if (result.id) {
+                validateMessage("Vous êtes bien inscrit", "pas ok" , "/login")
+            } else {
+                validateMessage(`Erreur lors de l'inscription \n ${result.msg ? result.msg : ""}`, "pas ok", 0)
+            }
         } else {
             validateMessage("Vous devez remplir tous les champs", "pas ok" , 0)
         }
@@ -96,7 +99,7 @@ const Register = () => {
                     <Input id="form-input-brand" fullWidth type="tel" placeholder="07818383569" sx={styleInputMui} value={numeroTel} onChange={(e) => setNumeroTel(e.target.value)}/>
                 </ContainerInputMui>
                 <ContainerInputMui>
-                    <LabelCustom htmlFor="form-input-brand">Votre numéro de téléphone</LabelCustom>
+                    <LabelCustom htmlFor="form-input-brand">Votre numéro de permis</LabelCustom>
                     <Input id="form-input-brand" fullWidth type="number" placeholder="Votre numéro de permis" sx={styleInputMui} value={numeroPermis} onChange={(e) => setNumeroPermis(e.target.value)}/>
                 </ContainerInputMui>
                 <ContainerInputMui>

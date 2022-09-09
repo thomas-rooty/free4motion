@@ -1,14 +1,16 @@
 import {Input, InputLabel, MenuItem, Select} from "@mui/material";
 import {useState} from "react";
 import {StandarContainers} from "./Containers";
-import {formatDateToDateTime} from "../utils";
-import UploadWhite from "../img/uploadImage.png"
-import UploadWhiteSuccess from "../img/uploadImageGreen.png"
+import {formatDateToDateTime, styleForSelectMui, styleInputMui} from "../utils";
 import {ButtonReservation} from "../components";
+import {useMessageStateClient} from "../context/MessageStateClient";
+import {ContainerInputMui} from "./MoreInfoCar";
+import {LabelCustom} from "./Register";
 
 const BackOfficeAddCar = () => {
 
     const newDate = new Date()
+    const {validateMessage} = useMessageStateClient()
 
     const [brand, setBrand] = useState("")
     const [model, setModel] = useState("")
@@ -20,7 +22,50 @@ const BackOfficeAddCar = () => {
     const [purcahsePrice, setPurchasePrice] = useState(0)
     const [type, setType] = useState("car")
     const [description, setDescription] = useState("")
-    const [image, setImage] = useState(undefined)
+    const [image, setImage] = useState("")
+
+    const [pointRetrait, setPointRetrait] = useState(0)
+
+    const handleSubmitAddCar = async () => {
+
+
+        if (model && description && serialNumber && color && licencePlate && totalKm && purchaseDate && purcahsePrice && type && image && brand) {
+
+            const formData = {
+                "modele" : model,
+                "description" : description,
+                "state" : 0,
+                "nSerie" : serialNumber,
+                "couleur" : color,
+                "plaque" : licencePlate,
+                "totalKm" : totalKm,
+                "dateAchat": purchaseDate + " 00:00:00",
+                "prixAchat" : purcahsePrice,
+                "type" : type,
+                "image" : image,
+                "agence" : pointRetrait,
+                "marque" : brand
+            }
+
+            const req = await fetch("http://139.162.191.134:8080/api/vehicules", {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            const result = await req.json()
+            if (result.id) {
+                validateMessage("Voiture bien ajouté !", "ok", "/free_admin/vehicles")
+            } else {
+                validateMessage("Erreur lors de l'ajout du véhicule", "pas ok", 0)
+            }
+        } else {
+            validateMessage("Vous devez remplir tous les champs", "pas ok" , 0)
+        }
+
+    }
 
     return (
         <div style={{color : "white", marginBottom : "16px"}}>
@@ -30,116 +75,77 @@ const BackOfficeAddCar = () => {
             <StandarContainers>
                 <div style={{width : "100%", display : "flex", justifyContent : "space-around", flexFlow : "row wrap"}}>
 
-                    <div style={{marginTop : "32px"}}>
-                        <label htmlFor="form-input-brand" style={{color : "#747474", display: "block"}}>Marque du véhicule</label>
-                        <Input id="form-input-brand" type="text" placeholder="Ferrari" sx={{
-                            color : "white",
-                            colorScheme: "dark",
-                            ':after': { borderBottomColor: '#44C034' },
-                        }} value={brand} onChange={(e) => setBrand(e.target.value)}/>
-                    </div>
-                    <div style={{marginTop : "32px"}}>
-                        <label htmlFor="form-input-model" style={{color : "#747474", display: "block"}}>Modèle du véhicule</label>
-                        <Input id="form-input-model" type="text" placeholder="SF90 Spider" sx={{
-                            color : "white",
-                            colorScheme: "dark",
-                            ':after': { borderBottomColor: '#44C034' },
-                        }} value={model} onChange={(e) => setModel(e.target.value)}/>
-                    </div>
-                    <div style={{marginTop : "32px"}}>
-                        <label htmlFor="form-input-serialNumber" style={{color : "#747474", display: "block"}}>Numéro de série</label>
-                        <Input id="form-input-serialNumber" type="text" placeholder="ZFA16900000979752" sx={{
-                            color : "white",
-                            colorScheme: "dark",
-                            ':after': { borderBottomColor: '#44C034' },
-                        }} value={serialNumber} onChange={(e) => setSerialNumber(e.target.value)}/>
-                    </div>
-                    <div style={{marginTop : "32px"}}>
-                        <label htmlFor="form-input-color" style={{color : "#747474", display: "block"}}>Couleur de votre voiture</label>
-                        <Input id="form-input-color" type="text" placeholder="red" sx={{
-                            color : "white",
-                            colorScheme: "dark",
-                            ':after': { borderBottomColor: '#44C034' },
-                        }} value={color} onChange={(e) => setColor(e.target.value)}/>
-                    </div>
-                    <div style={{marginTop : "32px"}}>
-                        <label htmlFor="form-input-licencePlate" style={{color : "#747474", display: "block"}}>Plaque d'immatriculation</label>
-                        <Input id="form-input-licencePlate" type="text" placeholder="BM-919-XQ" sx={{
-                            color : "white",
-                            colorScheme: "dark",
-                            ':after': { borderBottomColor: '#44C034' },
-                        }} value={licencePlate} onChange={(e) => setLicencePlate(e.target.value)}/>
-                    </div>
-                    <div style={{marginTop : "32px"}}>
-                        <label htmlFor="form-input-totalKm" style={{color : "#747474", display: "block"}}>km du véhicule</label>
-                        <Input id="form-input-totalKm" type="number" placeholder="" sx={{
-                            color : "white",
-                            colorScheme: "dark",
-                            ':after': { borderBottomColor: '#44C034' },
-                        }} value={totalKm} onChange={(e) => setTotalKm(parseInt(e.target.value))}/>
-                    </div>
-                    <div style={{marginTop : "32px"}}>
-                        <label htmlFor="form-input-purchaseDate" style={{color : "#747474", display: "block"}}>Date d'achat</label>
-                        <Input id="form-input-purchaseDate" type="date" inputProps={{min : formatDateToDateTime(newDate)}}  sx={{
-                            color : "white",
-                            colorScheme: "dark",
-                            ':after': { borderBottomColor: '#44C034' },
-                        }} value={purchaseDate} onChange={(e) => setPurchaseDate(e.target.value)}/>
-                    </div>
-                    <div style={{marginTop : "32px"}}>
-                        <label htmlFor="form-input-purchasePrice" style={{color : "#747474", display: "block"}}>Prix d'achat</label>
-                        <Input id="form-input-purchasePrice" type="number"  sx={{
-                            color : "white",
-                            colorScheme: "dark",
-                            ':after': { borderBottomColor: '#44C034' },
-                        }} value={purcahsePrice} onChange={(e) => setPurchasePrice(parseInt(e.target.value))}/>
-                    </div>
-                    <div style={{marginTop : "32px"}}>
+                    <ContainerInputMui width={45}>
+                        <LabelCustom htmlFor="form-input-brand">Marque du véhicule</LabelCustom>
+                        <Input id="form-input-brand" type="text" placeholder="Ferrari" fullWidth sx={styleInputMui} value={brand} onChange={(e) => setBrand(e.target.value)}/>
+                    </ContainerInputMui>
+                    <ContainerInputMui width={45}>
+                        <LabelCustom htmlFor="form-input-model">Modèle du véhicule</LabelCustom>
+                        <Input id="form-input-model" fullWidth type="text" placeholder="SF90 Spider" sx={styleInputMui} value={model} onChange={(e) => setModel(e.target.value)}/>
+                    </ContainerInputMui>
+                    <ContainerInputMui width={45}>
+                        <LabelCustom htmlFor="form-input-serialNumber">Numéro de série</LabelCustom>
+                        <Input id="form-input-serialNumber" fullWidth type="number" placeholder="16900000979752" sx={styleInputMui} value={serialNumber} onChange={(e) => setSerialNumber(e.target.value)}/>
+                    </ContainerInputMui>
+                    <ContainerInputMui width={45}>
+                        <LabelCustom htmlFor="form-input-color">Couleur de votre voiture</LabelCustom>
+                        <Input id="form-input-color" type="text"  fullWidth placeholder="red" sx={styleInputMui} value={color} onChange={(e) => setColor(e.target.value)}/>
+                    </ContainerInputMui>
+                    <ContainerInputMui width={45}>
+                        <LabelCustom htmlFor="form-input-licencePlate">Plaque d'immatriculation</LabelCustom>
+                        <Input id="form-input-licencePlate" fullWidth type="text" placeholder="BM-919-XQ" sx={styleInputMui} value={licencePlate} onChange={(e) => setLicencePlate(e.target.value)}/>
+                    </ContainerInputMui>
+                    <ContainerInputMui width={45}>
+                        <LabelCustom htmlFor="form-input-totalKm">km du véhicule</LabelCustom>
+                        <Input id="form-input-totalKm" fullWidth type="number" placeholder="" sx={styleInputMui} value={totalKm} onChange={(e) => setTotalKm(parseInt(e.target.value))}/>
+                    </ContainerInputMui>
+                    <ContainerInputMui width={45}>
+                        <LabelCustom htmlFor="form-input-purchaseDate">Date d'achat</LabelCustom>
+                        <Input id="form-input-purchaseDate" type="date" fullWidth inputProps={{min : formatDateToDateTime(newDate)}}  sx={styleInputMui} value={purchaseDate} onChange={(e) => setPurchaseDate(e.target.value)}/>
+                    </ContainerInputMui>
+                    <ContainerInputMui width={45}>
+                        <LabelCustom htmlFor="form-input-purchasePrice">Prix d'achat</LabelCustom>
+                        <Input id="form-input-purchasePrice" type="number" fullWidth sx={styleInputMui} value={purcahsePrice} onChange={(e) => setPurchasePrice(parseInt(e.target.value))}/>
+                    </ContainerInputMui>
+                    <ContainerInputMui width={50}>
                         <InputLabel id="form-input-type" style={{color : "#747474", fontFamily : "Inter"}}>Type de véhicule</InputLabel>
                         <Select
                             id="select-form-input-type"
                             labelId="form-input-type"
                             value={type}
+                            fullWidth
                             onChange={(e) => setType(e.target.value)}
-                            sx={{
-                                color : "white",
-                                outline : 0,
-                                border: "1px solid darkgrey",
-                                colorScheme: "dark",
-                                "& .MuiSelect-icon" : {
-                                    color : "white"
-                                },
-                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                    borderColor: '#44C034',
-                                }
-                            }}
+                            sx={styleForSelectMui}
                         >
                             <MenuItem value="car">Voiture</MenuItem>
-                            <MenuItem value="trotinette">Trotinette</MenuItem>
+                            <MenuItem value="trotinette">Trottinette</MenuItem>
                         </Select>
-                    </div>
-                    <div style={{marginTop : "32px"}}>
+                    </ContainerInputMui>
+                    <ContainerInputMui>
                         <label htmlFor="form-input-description" style={{color : "#747474", display: "block"}}>Description de votre véhicule</label>
-                        <Input id="form-input-description" type="text" fullWidth={true} multiline={true} rows={4} placeholder="Le 6m3 (type Fiat Scudo ou similiare) est recommandé pour le transport d'objets et de cartons de grande taille. Ce petit utilitaire confortable et fonctionnel, permet aux particuliers et professionnels de transporter leur matériel facilement. Egalement adapté pour le déménagement de gros meubles." sx={{
-                            color : "white",
-                            width : "320px",
-                            colorScheme: "dark",
-                            ':after': { borderBottomColor: '#44C034' },
-                        }} value={description} onChange={(e) => setDescription(e.target.value)}/>
-                    </div>
-                    <div style={{marginTop : "32px"}}>
-                        <label htmlFor="form-input-image">
-                            <div style={{textAlign : "center"}}>
-                                <h5 style={{fontSize : "16px", color : "#747474"}}>Uploader une image</h5>
-                                <div style={{marginTop : "16px"}}>
-                                    <img src={image ? UploadWhiteSuccess : UploadWhite} style={{width : "64px"}} alt="icone upload image"/>
-                                </div>
-                            </div>
-                        </label>
-                        <input id="form-input-image" type="file" style={{display : "none"}} onChange={(e) => setImage(e.target.files[0])}/>
-                    </div>
+                        <Input id="form-input-description" type="text" fullWidth={true} multiline={true} rows={4} placeholder="Le 6m3 (type Fiat Scudo ou similiare) est recommandé pour le transport d'objets et de cartons de grande taille. Ce petit utilitaire confortable et fonctionnel, permet aux particuliers et professionnels de transporter leur matériel facilement. Egalement adapté pour le déménagement de gros meubles." sx={styleInputMui} value={description} onChange={(e) => setDescription(e.target.value)}/>
+                    </ContainerInputMui>
+                    <ContainerInputMui>
+                        <label htmlFor="form-input-description" style={{color : "#747474", display: "block"}}>Url de votre image</label>
+                        <Input id="form-input-description" type="text" fullWidth={true} placeholder="https://img.freepik.com/photos-premium/voiture-sport-sans-marque-generique-rouge-fond-coucher-soleil_110488-1890.jpg?w=2000" sx={styleInputMui} value={image} onChange={(e) => setImage(e.target.value)}/>
+                    </ContainerInputMui>
+                    <ContainerInputMui>
+                        <div style={{marginTop : "32px"}}>
+                            <InputLabel id="select-point-retrait-label" style={{color : "#747474", fontFamily : "Inter"}}>L'agence du véhicule</InputLabel>
+                            <Select
+                                id="select-point-retrait"
+                                labelId="select-point-retrait-label"
+                                value={pointRetrait}
+                                onChange={(e) => setPointRetrait(e.target.value)}
+                                sx={styleForSelectMui}
+                            >
+                                <MenuItem value={0}>Agence de Paris</MenuItem>
+                                <MenuItem value={1}>Agence de Lyon</MenuItem>
+                            </Select>
+                        </div>
+                    </ContainerInputMui>
                 </div>
-                <div style={{width : "80%", marginTop : "32px", marginLeft : "auto", marginRight : "auto"}}>
+                <div style={{width : "80%", marginTop : "32px", marginLeft : "auto", marginRight : "auto"}} onClick={() => handleSubmitAddCar()}>
                     <ButtonReservation height={40} msg="Envoyer"/>
                 </div>
             </StandarContainers>

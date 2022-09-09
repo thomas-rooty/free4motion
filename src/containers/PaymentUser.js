@@ -1,12 +1,19 @@
 import {StripeContainer} from "./Stripe";
-import {ButtonReservation} from "../components";
+import styled from "styled-components";
+
+const ContainerPayment = styled.div`
+    width: 300px;
+    margin-top: 200px;
+    margin-left: auto;
+    margin-right: auto;
+`;
 
 const PaymentUser = () => {
 
     return(
-        <div style={{width : "300px", marginTop : "200px", marginLeft : "auto", marginRight : "auto"}}>
+        <ContainerPayment>
             <StripeContainer/>
-        </div>
+        </ContainerPayment>
     )
 }
 export default PaymentUser

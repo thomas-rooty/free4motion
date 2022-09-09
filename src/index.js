@@ -3,15 +3,16 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import GlobalStyle from "./globalStyles";
+import {ContextAuthProvider} from "./context/ContextAuth";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
       <React.Fragment>
-          <GlobalStyle/>
-          <App />
+          <ContextAuthProvider>
+              <GlobalStyle/>
+              <App />
+          </ContextAuthProvider>
       </React.Fragment>
-  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

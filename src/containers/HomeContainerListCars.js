@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 import {useContextHomePage} from "../context/ContexHomePage";
 import styled from "styled-components";
 
-const ContainerHomePage = styled.div`
+export const ContainerHomePage = styled.div`
   position : relative;
   margin-top : 48px;
   
@@ -14,6 +14,20 @@ const ContainerHomePage = styled.div`
   }
 `
 
+export const ContainerListVehicles = styled.div`
+  margin-top: 16px;
+  display: flex;
+  max-width: 100%;
+  overflow-y: auto;
+  overflow: hidden;
+`;
+export const H2 = styled.h2`
+    font-size: 18px;
+    color: #747474;
+`;
+
+
+
 
 const HomeContainerListCars = () => {
 
@@ -21,7 +35,7 @@ const HomeContainerListCars = () => {
     const [data, setData] = useState([])
 
     const getListVehicles = async () => {
-        const req = await fetch('http://139.162.191.134:8080/api/vehicules')
+        const req = await fetch('http://139.162.191.134:8080/api/offre')
         const data = await req.json()
         setData(data)
     }
@@ -30,6 +44,7 @@ const HomeContainerListCars = () => {
         const data = await req.json()
         setData(data)
     }
+
 
 
     useEffect(() => {
@@ -41,84 +56,47 @@ const HomeContainerListCars = () => {
         }
     }, [search])
 
-    console.log(data)
-
-    const carParis = data.filter(element => element.type === "car" && element.agence === 0)
-    const trotiParis = data.filter(element => element.type === "trottinette" && element.agence === 0)
-    const carLyon = data.filter(element => element.type === "car" && element.agence === 1)
-    const trotiLyon = data.filter(element => element.type === "trottinette" && element.agence === 1)
+    const vehiclesParis = data.filter(element => element.agence === 0)
+    const vehiclesLyon = data.filter(element => element.agence === 1)
 
 
     return(
         <ContainerHomePage>
             {
-                carParis.length > 0
+                vehiclesParis.length > 0
                 &&
-                <div>
+                <div style={{marginTop : "32px"}}>
                     <StandarContainers>
-                        <h2 style={{fontSize : "12px", color : "#747474"}}>Nos voitures disponibles sur Paris</h2>
+                        <H2>PARIS</H2>
                     </StandarContainers>
-                    <div style={{marginTop : "16px", display : "flex", maxWidth : "100%", overflow : "auto"}}>
+                    <ContainerListVehicles>
                         {
-                            carParis.map(
+                            vehiclesParis.map(
                                 element =>
-                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.marque} modele={element.modele} id={element.id} description={element.description} agence={element.agence}/>
+                                    <BoxCar key={element.idVehicule} image={element.image} marque={element.marque} modele={element.modele} id={element.idVehicule} description={element.description} agence={element.agence}/>
                             )
                         }
-                    </div>
+                    </ContainerListVehicles>
                 </div>
             }
             {
-                trotiParis.length > 0
+                vehiclesLyon.length > 0
                 &&
-                <div>
+                <div style={{marginTop : "32px"}}>
                     <StandarContainers>
-                        <h2 style={{fontSize : "12px", color : "#747474"}}>Nos trottinettes disponibles sur Paris</h2>
+                        <H2>LYON</H2>
                     </StandarContainers>
-                    <div style={{marginTop : "16px", display : "flex", maxWidth : "100%", overflow : "auto"}}>
+                    <ContainerListVehicles>
                         {
-                            trotiParis.map(
+                            vehiclesLyon.map(
                                 element =>
-                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.marque} modele={element.modele} id={element.id} description={element.description} agence={element.agence}/>
+                                    <BoxCar key={element.idVehicule} image={element.image} marque={element.marque} modele={element.modele} id={element.idVehicule} description={element.description} agence={element.agence}/>
                             )
                         }
-                    </div>
+                    </ContainerListVehicles>
                 </div>
             }
-            {
-                carLyon.length > 0
-                &&
-                <div>
-                    <StandarContainers>
-                        <h2 style={{fontSize : "12px", color : "#747474"}}>Nos voitures disponibles sur Lyon</h2>
-                    </StandarContainers>
-                    <div style={{marginTop : "16px", display : "flex", maxWidth : "100%", overflow : "auto"}}>
-                        {
-                            carLyon.map(
-                                element =>
-                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.marque} modele={element.modele} id={element.id} description={element.description} agence={element.agence}/>
-                            )
-                        }
-                    </div>
-                </div>
-            }
-            {
-                trotiLyon.length > 0
-                &&
-                <div>
-                    <StandarContainers>
-                        <h2 style={{fontSize : "12px", color : "#747474"}}>Nos trottinettes disponibles sur Lyon</h2>
-                    </StandarContainers>
-                    <div style={{marginTop : "16px", display : "flex", maxWidth : "100%", overflow : "auto"}}>
-                        {
-                            trotiLyon.map(
-                                element =>
-                                    <BoxCar key={element.serialNumber} image={element.image} marque={element.marque} modele={element.modele} id={element.id} description={element.description} agence={element.agence}/>
-                            )
-                        }
-                    </div>
-                </div>
-            }
+
 
         </ContainerHomePage>
     )

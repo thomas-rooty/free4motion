@@ -5,11 +5,16 @@
   "dependencies": {
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
+    "@fullcalendar/core": "^5.11.3",
+    "@fullcalendar/daygrid": "^5.11.3",
+    "@fullcalendar/interaction": "^5.11.3",
+    "@fullcalendar/react": "^5.11.2",
     "@mui/lab": "^5.0.0-alpha.95",
     "@mui/material": "^5.10.1",
     "@mui/x-date-pickers": "^5.0.0-beta.5",
     "@stripe/react-stripe-js": "^1.10.0",
     "@stripe/stripe-js": "^1.35.0",
+    "@sweetalert2/theme-dark": "^5.0.12",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
@@ -19,6 +24,8 @@
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "styled-components": "^5.3.5",
+    "sweetalert2": "^11.4.29",
+    "sweetalert2-react-content": "^5.0.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

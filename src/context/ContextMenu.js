@@ -11,9 +11,11 @@ export const ContextMenuProvider = ({children}) => {
 
     const [isOpen, setIsOpen] = useState(false)
 
+
     useEffect(() => {
         setIsOpen(false)
     }, [location])
+
 
     return(
 
@@ -21,11 +23,9 @@ export const ContextMenuProvider = ({children}) => {
             <>
                 <Navbar/>
                 {
-                    window.screen.width < 720
-                        ? !isOpen
-                            ? children
-                            : <ListDropdownNav/>
-                        : children
+                    !isOpen
+                        ? children
+                        : <ListDropdownNav/>
                 }
             </>
         </ContextMenu.Provider>

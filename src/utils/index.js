@@ -1,15 +1,5 @@
 export const STRIPE_PUBLIC_KEY = "pk_test_51LcPW5AFfsQYgyNy7Ic4fr1fo81RfvdfrIMMZBLBvisnUpoQHMMPC2zK7iPLU1jlW273VnrurWjZvQFZskRpCTYr00bTDmMui9"
 
-export const slugify = (text) => {
-    return text
-        .toString() // Cast to string (optional)
-        .normalize("NFKD") // The normalize() using NFKD method returns the Unicode Normalization Form of a given string.
-        .toLowerCase() // Convert the string to lowercase letters
-        .trim() // Remove whitespace from both sides of a string (optional)
-        .replace(/\s+/g, "-") // Replace spaces with -
-        .replace(/[^\w\-]+/g, "") // Remove all non-word chars
-        .replace(/\-\-+/g, "-"); // Replace multiple - with single -
-}
 
 export const formatDateToDateTime = (date) => {
     const hours = date.getHours() > 9 ? date.getHours() : `0${date.getHours()}`
@@ -26,3 +16,24 @@ export const formatDateToDateTime = (date) => {
 
 export const priceByKm = 0.22
 export const priceByDays = 42.00
+
+export const styleForSelectMui = {
+    color : "white",
+    outline : 0,
+    border: "1px solid darkgrey",
+    colorScheme: "dark",
+    "& .MuiSelect-icon" : {
+        color : "white"
+    },
+    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+        borderColor: '#44C034',
+    }
+}
+export const styleInputMui = {
+    color : "white",
+    colorScheme: "dark",
+    "& input" : {
+        paddingLeft : "10px"
+    },
+    ':after': { borderBottomColor: '#44C034' },
+}

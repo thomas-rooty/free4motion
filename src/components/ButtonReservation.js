@@ -7,6 +7,7 @@ const CustomButton = styled.button`
     border-radius: 321px;
     border: none;
     width: 100%;
+    cursor: pointer;
 `;
 
 

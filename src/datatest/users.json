@@ -1,0 +1,28 @@
+[
+  {
+    "idPersonne" : 0,
+    "prenom" : "Armand",
+    "nom" : "Thomas",
+    "naissance" : "1999-06-28",
+    "adresse" : "12 rue de rebercourt 28170 Tremblay-les-villages",
+    "numeroTel" : "0781833569",
+    "numeroPermis" : 4151515155,
+    "numeroCb" : 4344212414,
+    "adresseFacturation" : "12 rue de rebercourt 28170 Tremblay-les-villages",
+    "role" : 1,
+    "email" : "arthomas2878@gmail.com"
+  },
+  {
+  "idPersonne" : 1,
+  "prenom" : "Thomas",
+  "nom" : "Caron",
+  "naissance" : "2000-04-21",
+  "adresse" : "12 rue de versailles 78000 Versailles",
+  "numeroTel" : "06141415",
+  "numeroPermis" : 155251525,
+  "numeroCb" : 4344215215152414,
+  "adresseFacturation" : "12 rue de versailles 78000 Versailles",
+  "role" : 2,
+    "email" : "thomas.caron@gmail.com"
+}
+]

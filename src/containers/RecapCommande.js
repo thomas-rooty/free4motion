@@ -11,6 +11,7 @@ import {Link} from "react-router-dom";
 import styled from "styled-components";
 import DefaultImg from "../img/aide-achat-voiture-hydrogene_280219.jpg";
 import {useMessageStateClient} from "../context/MessageStateClient";
+import {ENTRY_API_URL} from "../utils";
 
 const ContainerReturn = styled.div`
     display: flex;
@@ -66,7 +67,7 @@ const RecapCommande = () => {
             "state" : 3,
             "idOffre" : idOffre
         }
-        const reqPostCommande = await fetch('http://139.162.191.134:8080/api/contrat', {
+        const reqPostCommande = await fetch(`${ENTRY_API_URL}api/contrat`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -75,8 +76,8 @@ const RecapCommande = () => {
             body: JSON.stringify(data)
         });
         const result = await reqPostCommande.json()
-        if (result.id) {
-            validateMessage("Redirection vers le paiement !", "info", `/payment/${result.id}`, 1000)
+        if (result.idContrat) {
+            validateMessage("Redirection vers le paiement !", "info", `/payment/${result.idContrat}`, 1000)
         } else {
             validateMessage("Une erreur est survenue", "pas ok", 0)
         }

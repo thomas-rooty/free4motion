@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import {ContainerHomePage} from "./HomeContainerListCars";
 import {StandarContainers} from "./Containers";
 import styled from "styled-components";
+import {ENTRY_API_URL} from "../utils";
 
 const H2 = styled.h2`
     font-size: 16px;
@@ -25,23 +26,25 @@ const BackOfficeAdminVehicles = () => {
 
     const reqVehicles = async () => {
 
-        const reqVehicles = await fetch('http://139.162.191.134:8080/api/vehicules/')
+        const reqVehicles = await fetch(`${ENTRY_API_URL}api/vehicules/`)
         const respVehicles = await reqVehicles.json()
+
+        const activeVehicles = respVehicles.filter(vehicle => vehicle.state === 1)
 
         console.log(respVehicles)
 
 
-        const reqOffers = await fetch("http://139.162.191.134:8080/api/offre")
+        const reqOffers = await fetch(`${ENTRY_API_URL}api/offre`)
         const respOffers = await reqOffers.json()
 
         console.log(respOffers)
 
         const resultsOffers = respOffers.filter((obj) => {
-            return respVehicles.some((obj2) => {
-                return obj.value == obj2.value;
+            return activeVehicles.some((obj2) => {
+                return obj.idVehicule === obj2.idVehicule && obj.stateOffre === 1;
             });
         });
-        const vehiclesWithNoOffers = respVehicles.filter((obj) => {
+        const vehiclesWithNoOffers = activeVehicles.filter((obj) => {
             return !resultsOffers.some((obj2) => {
                 return obj.idVehicule === obj2.idVehicule
             })

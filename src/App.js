@@ -50,7 +50,7 @@ function App() {
                               <Route path="/my-orders" element={
                                   <ListUserCommandes/>
                               }/>
-                              <Route path="/payment" element={
+                              <Route path="/payment/:currID" element={
                                   <PaymentUser/>
                               }/>
                           </Route>

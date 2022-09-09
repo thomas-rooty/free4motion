@@ -9,7 +9,7 @@ import RemoveImg from '../img/remove.png'
 import {useMessageStateClient} from "../context/MessageStateClient";
 import {ContainerInputMui} from "../containers/MoreInfoCar";
 import {Input} from "@mui/material";
-import {styleInputMui} from "../utils";
+import {ENTRY_API_URL, styleInputMui} from "../utils";
 
 import BoxCommandeAdmin from "./BoxCommandeAdmin";
 import addWhite from '../img/addWhite.png'
@@ -53,6 +53,11 @@ const ContainerImg = styled.div`
     transform: ${props => props.rotate && "rotate(180deg)"}
 `;
 
+const ContainerFlex = styled.div`
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+`;
 
 const BoxUser = ({data, handleChange}) => {
 
@@ -66,7 +71,7 @@ const BoxUser = ({data, handleChange}) => {
 
     const getAllContratsPpl = async () => {
 
-        const req = await fetch(`http://139.162.191.134:8080/api/contrat/user/${idPersonne}`)
+        const req = await fetch(`${ENTRY_API_URL}api/contrat/user/${idPersonne}`)
         const result = await req.json()
 
         if (!result.message) {
@@ -122,7 +127,7 @@ const BoxUser = ({data, handleChange}) => {
                     !userWantEdit
                         ?
                             <>
-                                <div style={{display :"flex", flexFlow : "row wrap", justifyContent : "space-around"}}>
+                                <ContainerFlex>
 
                                     <div className="child">
                                         <H4>ID :</H4>
@@ -148,7 +153,7 @@ const BoxUser = ({data, handleChange}) => {
                                         <H4>Numéro de permis :</H4>
                                         <h2>{numeroPermis}</h2>
                                     </div>
-                                </div>
+                                </ContainerFlex>
                                 <img src={EditImg} onClick={() => {setUserWantEdit(true)}} style={{width : "32px"}}/>
                                 <ContainerImg rotate={showCommands} onClick={() => {setUserShowCommands(prevState => prevState === false)}}>
                                     <img src={ChevronDown}/>
@@ -157,7 +162,7 @@ const BoxUser = ({data, handleChange}) => {
                             </>
                         :
                         <>
-                            <div style={{display :"flex", flexFlow : "row wrap"}}>
+                            <ContainerFlex>
 
                                 <ContainerInputMui width={15}>
                                     <Input id="form-input-serialNumber" fullWidth type="text" value={nom} sx={styleInputMui} onChange={(e) => handleChange(idPersonne, "nom", e.target.value)}/>
@@ -174,16 +179,16 @@ const BoxUser = ({data, handleChange}) => {
                                 <ContainerInputMui width={15}>
                                     <Input id="form-input-serialNumber" fullWidth type="number" value={numeroPermis} sx={styleInputMui} onChange={(e) => handleChange(idPersonne, "numeroPermis", e.target.value)}/>
                                 </ContainerInputMui>
-                            </div>
-                            <div style={{display :"flex", flexFlow : "row wrap"}}>
-                                <div style={{display : "flex", justifyContent : "space-around", alignItems : "center"}}>
+                            </ContainerFlex>
+                            <ContainerFlex>
+                                <ContainerFlex>
                                     <img src={Validate} onClick={() => {handleEditUser()}}  style={{width : "32px"}}/>
                                     <img src={RemoveImg} onClick={() => handleDeleteUser()} style={{width : "32px"}}/>
-                                </div>
+                                </ContainerFlex>
                                 <ContainerImg rotate={showCommands && true} onClick={() => {setUserShowCommands(prevState => prevState === false)}}>
                                     <img src={ChevronDown}/>
                                 </ContainerImg>
-                            </div>
+                            </ContainerFlex>
 
 
                         </>

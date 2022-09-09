@@ -1,9 +1,9 @@
-import data from '../datatest/datalistlocation.json'
 import {StandarContainers} from "./Containers";
 import {BoxCar} from "../components";
 import {useEffect, useState} from "react";
 import {useContextHomePage} from "../context/ContexHomePage";
 import styled from "styled-components";
+import {ENTRY_API_URL} from "../utils";
 
 export const ContainerHomePage = styled.div`
   position : relative;
@@ -35,12 +35,15 @@ const HomeContainerListCars = () => {
     const [data, setData] = useState([])
 
     const getListVehicles = async () => {
-        const req = await fetch('http://139.162.191.134:8080/api/offre')
+        const req = await fetch(`${ENTRY_API_URL}api/offre`)
         const data = await req.json()
-        setData(data)
+
+
+        const activeOffres = data.filter(offre => offre.stateOffre === 1)
+        setData(activeOffres)
     }
     const searchByName = async (value) => {
-        const req = await fetch(`http://139.162.191.134:8080/api/vehicules?modele=${value}`)
+        const req = await fetch(`${ENTRY_API_URL}api/vehicules?modele=${value}`)
         const data = await req.json()
         setData(data)
     }

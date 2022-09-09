@@ -1,4 +1,5 @@
 import {useContext, createContext, useState, useEffect} from "react";
+import {ENTRY_API_URL} from "../utils";
 
 
 const ContextAuth = createContext()
@@ -15,7 +16,7 @@ export const ContextAuthProvider = ({children}) => {
 
         if (token) {
 
-            const req = await fetch(`http://139.162.191.134:8080/api/user?token=${token}`)
+            const req = await fetch(`${ENTRY_API_URL}api/user?token=${token}`)
             const [result] = await req.json()
 
             if (result.idPersonne) {
@@ -49,8 +50,9 @@ export const ContextAuthProvider = ({children}) => {
     }
     const getIdCurrentPpl = async () => {
         const token = localStorage.getItem("token")
-        const req = await fetch(`http://139.162.191.134:8080/api/user?token=${token}`)
+        const req = await fetch(`${ENTRY_API_URL}api/user?token=${token}`)
         const [result] = await req.json()
+        console.log(result.idPersonne)
         return result
     }
 

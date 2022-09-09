@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 import {ContainerInputMui} from "./MoreInfoCar";
 import {LabelCustom} from "./Register";
 import {Input} from "@mui/material";
-import {styleInputMui} from "../utils";
+import {ENTRY_API_URL, styleInputMui} from "../utils";
 
 const BackOfficeUsers = () => {
 
@@ -14,7 +14,7 @@ const BackOfficeUsers = () => {
 
     const fetchAllUsers = async () => {
 
-        const req = await fetch(`http://139.162.191.134:8080/api/users`)
+        const req = await fetch(`${ENTRY_API_URL}api/users`)
         const result = await req.json()
 
         setData(result)

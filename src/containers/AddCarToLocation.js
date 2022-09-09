@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import {Input, InputLabel, MenuItem, Select} from "@mui/material";
 import {ButtonReservation} from "../components";
 import {useMessageStateClient} from "../context/MessageStateClient";
-import {styleForSelectMui, styleInputMui} from "../utils";
+import {ENTRY_API_URL, styleForSelectMui, styleInputMui} from "../utils";
 import {LabelCustom} from "./Register";
 import DefaultImg from "../img/aide-achat-voiture-hydrogene_280219.jpg";
 
@@ -21,7 +21,7 @@ const AddCarToLocation = () => {
     const [paramsCar, setParamsCar] = useState({})
 
     const fetchByIdInfo = async (id) => {
-        const req = await fetch(`http://139.162.191.134:8080/api/vehicules/${id}`)
+        const req = await fetch(`${ENTRY_API_URL}api/vehicules/${id}`)
         const data = await req.json()
         setParamsCar(data)
     }
@@ -43,9 +43,10 @@ const AddCarToLocation = () => {
             "idVehicule" : id,
             "prixParKm" : parseFloat(prixKm),
             "prixParJour" : parseFloat(prixByDays),
+            "state" : 1
         }
 
-        const reqPostLocation = await fetch('http://139.162.191.134:8080/api/offre', {
+        const reqPostLocation = await fetch(`${ENTRY_API_URL}api/offre`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

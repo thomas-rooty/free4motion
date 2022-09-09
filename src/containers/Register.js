@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {LOGIN, LOGOUT, styleInputMui} from "../utils";
+import {ENTRY_API_URL, LOGIN, LOGOUT, styleInputMui} from "../utils";
 import {Input} from "@mui/material";
 import {StandarContainers} from "./Containers";
 import {ButtonReservation} from "../components";
@@ -37,7 +37,7 @@ const Register = () => {
                 "addresseFacturation":addresseFacturation,
                 "pwd" : password,
             }
-            const req = await fetch("http://139.162.191.134:8080/api/user", {
+            const req = await fetch(`${ENTRY_API_URL}api/user`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',

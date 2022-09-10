@@ -4,6 +4,7 @@ import DefaultImg from "../img/aide-achat-voiture-hydrogene_280219.jpg";
 import EditImg from "../img/edit.png";
 import {Link} from "react-router-dom";
 import {useEffect, useState} from "react";
+import {ENTRY_API_URL} from "../utils";
 
 
 const ContainerCommande = styled.div`
@@ -34,6 +35,14 @@ const Circle = styled.div`
     border-radius: 50%;
 `;
 
+const ContainerInfos = styled.div`
+    width: 40%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  align-items: center;
+`;
+
 const BoxCommandeAdmin = ({admin, info}) => {
 
 
@@ -43,12 +52,12 @@ const BoxCommandeAdmin = ({admin, info}) => {
 
     const getOffre = async () => {
 
-        const req = await fetch(`http://139.162.191.134:8080/api/offre/${idOffre}`)
+        const req = await fetch(`${ENTRY_API_URL}api/offre/${idOffre}`)
         const {idVehicule} = await req.json()
 
         if (idVehicule) {
 
-            const getInfoVehicule = await fetch(`http://139.162.191.134:8080/api/vehicules/${idVehicule}`)
+            const getInfoVehicule = await fetch(`${ENTRY_API_URL}api/vehicules/${idVehicule}`)
             const data = await getInfoVehicule.json()
 
             setInfoVehicle(data)
@@ -76,7 +85,7 @@ const BoxCommandeAdmin = ({admin, info}) => {
                 }
 
             </div>
-           <div style={{width : "40%", display :"flex", flexFlow : "row wrap", justifyContent : "space-around", alignItems : "center"}}>
+           <ContainerInfos>
 
                <div className="child">
                    <H4>Date début</H4>
@@ -92,7 +101,7 @@ const BoxCommandeAdmin = ({admin, info}) => {
                <div className="child">
                    <Link to={`/free_admin/edit_commande/${idContrat}`} state={{"idVehicle" : idVehicle}}><img src={EditImg} style={{width : "32px"}}/></Link>
                </div>
-            </div>
+            </ContainerInfos>
 
         </ContainerCommande>
     )

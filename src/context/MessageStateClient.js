@@ -1,4 +1,4 @@
-import {useContext, createContext, useState} from "react";
+import {useContext, createContext} from "react";
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import {useNavigate} from "react-router-dom";
@@ -34,6 +34,7 @@ export const MessageStateClientProvider = ({children}) => {
                 title: "OK!",
                 text: msg,
                 icon: "success",
+                timer : timer ? timer : undefined
             }).then(
                 () => {
                     goTo && goTo !== 0 && navigate(goTo)
@@ -55,6 +56,7 @@ export const MessageStateClientProvider = ({children}) => {
                 title: "OOPS !",
                 text: msg,
                 icon: "error",
+                timer : timer ? timer : undefined
             }).then(
                 () => {
                     goTo && goTo !== 0 && navigate(goTo)

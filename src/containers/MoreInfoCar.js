@@ -2,7 +2,7 @@ import {useLocation, Link, useParams, useNavigate} from "react-router-dom";
 import {StandarContainers} from "./Containers";
 import {Input, InputLabel, MenuItem, Select} from "@mui/material";
 import {useEffect, useState} from "react";
-import {priceByKm, priceByDays,styleInputMui} from '../utils'
+import {ENTRY_API_URL, styleInputMui} from '../utils'
 import {ButtonReservation} from "../components";
 import {useMessageStateClient} from "../context/MessageStateClient";
 import styled from "styled-components";
@@ -12,7 +12,6 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import frLocale from "@fullcalendar/core/locales/fr";
 import Deleteicon from '../img/remove.png'
-import ListCommandes from '../datatest/contrat.json'
 import {useContextAuth} from "../context/ContextAuth";
 
 const H3 = styled.h3`
@@ -67,7 +66,7 @@ const MoreInfoCar = () => {
     const [listEvents, setListEvents] = useState([])
 
     const fetchByIdInfo = async (id) => {
-        const req = await fetch(`http://139.162.191.134:8080/api/vehicules/${id}`)
+        const req = await fetch(`${ENTRY_API_URL}api/vehicules/${id}`)
         const data = await req.json()
         setParamsCar(data)
     }
@@ -82,20 +81,15 @@ const MoreInfoCar = () => {
         if (!occurenceStart || !occurenceEnd) {
             const inverse = inverseGetEvents(infos.start, infos.end)
             if (!inverse) {
+                const newEndDate = infos.end.setDate(infos.end.getDate()-1)
                 setStartDate(infos.startStr + " 07:00")
-                setEndDate(infos.endStr  + " 18:00")
+                setEndDate(new Date(newEndDate).toISOString().split("T")[0]  + " 18:00")
             } else {
                 validateMessage("Merci de renseigner des dates disponibles", "pas ok", 0)
             }
         } else {
             validateMessage("Merci de renseigner des dates disponibles", "pas ok", 0)
         }
-
-
-        console.log(occurenceStart, occurenceEnd)
-
-
-
 
     }
 
@@ -153,7 +147,7 @@ const MoreInfoCar = () => {
 
     const fetchOffreVehicule =  async  () => {
 
-        const req = await fetch(`http://139.162.191.134:8080/api/vehicules/${paramsCar.idVehicule}/offre`)
+        const req = await fetch(`${ENTRY_API_URL}api/vehicules/${paramsCar.idVehicule}/offre`)
         const result = await req.json()
         setParamsLocation(result)
     }
@@ -178,24 +172,27 @@ const MoreInfoCar = () => {
 
     useEffect(() => {
         if (Object.keys(paramsLocation).length > 0){
+            console.log(paramsLocation)
 
             fetchCommandesByLocation()
         }
     }, [paramsLocation])
 
     const fetchCommandesByLocation = async () => {
-        const req = await fetch(`http://139.162.191.134:8080/api/contrat/offre/${paramsLocation.idOffre}`)
+        const req = await fetch(`${ENTRY_API_URL}api/contrat/offre/${paramsLocation.idOffre}`)
         const result = await req.json()
-        const currListEvents = result.map(element => (
-            {
-                "id" : element.idContrat,
-                "start" : element.dateDebut,
-                "end" : element.dateFin,
-                allDay : element.dateDebut.split("T")[0] === element.dateFin.split("T")[0]
-            }
-        ))
+        if (result) {
+            const currListEvents = result.map(element => (
+                {
+                    "id" : element.idContrat,
+                    "start" : element.dateDebut,
+                    "end" : element.dateFin,
+                    allDay : element.dateDebut.split("T")[0] === element.dateFin.split("T")[0]
+                }
+            ))
 
-        setListEvents(currListEvents)
+            setListEvents(currListEvents)
+        }
     }
 
     const handleSubmit = async () => {
@@ -204,7 +201,6 @@ const MoreInfoCar = () => {
 
         if (idPersonne && startDate && endDate &&  killometers && paramsLocation) {
 
-            console.log(idPersonne, startDate, endDate, killometers)
 
             const data = {
                 "idPersonne": idPersonne,
@@ -218,25 +214,8 @@ const MoreInfoCar = () => {
                 "prix" : price
             }
 
-            console.log(data)
             navigate("/validation_commande", {state: data})
         }
-
-            /* const reqPostCommande = await fetch('http://139.162.191.134:8080/api/contrat', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-            const respPostCommande = await reqPostCommande.json()
-            if (respPostCommande.id) {
-                validateMessage("Contrat bien crée", "ok" , `/my-orders/${respPostCommande.id}`, 1000)
-            } else {
-                validateMessage("Une erreur est survenue", "pas ok", 0)
-            }
-        } */
         else {
             validateMessage("Vous devez remplir tous les champs", "pas ok" , 0)
         }

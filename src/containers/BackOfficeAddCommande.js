@@ -1,6 +1,6 @@
 import {ContainerInputMui} from "./MoreInfoCar";
 import {Input, InputLabel, MenuItem, Select} from "@mui/material";
-import {styleForSelectMui, styleInputMui} from "../utils";
+import {ENTRY_API_URL, styleForSelectMui, styleInputMui} from "../utils";
 import listVehicles from '../datatest/datalistlocation.json'
 import {useEffect, useState} from "react";
 import DefaultImg from "../img/aide-achat-voiture-hydrogene_280219.jpg";
@@ -44,7 +44,7 @@ const BackOfficeAddCommande = () => {
 
     const getListOffreLocations = async () => {
 
-        const req = await fetch('http://139.162.191.134:8080/api/offre')
+        const req = await fetch(`${ENTRY_API_URL}api/offre`)
         const data = await req.json()
         setListOffreLocations(data)
 
@@ -52,7 +52,7 @@ const BackOfficeAddCommande = () => {
 
     const getOffreByIDVehicule = async () => {
 
-        const req = await fetch(`http://139.162.191.134:8080/api/vehicules/${selectedCar}/offre`)
+        const req = await fetch(`${ENTRY_API_URL}api/vehicules/${selectedCar}/offre`)
         const result = await req.json()
         setDataOffreLocation(result)
 
@@ -81,9 +81,9 @@ const BackOfficeAddCommande = () => {
     }, [selectedDate, km])
     const getCommandeByIdOffre = async () => {
 
-        const req = await fetch(`http://139.162.191.134:8080/api/contrat/offre/${dataOffreLocation.idOffre}`)
+        const req = await fetch(`${ENTRY_API_URL}api/contrat/offre/${dataOffreLocation.idOffre}`)
         const result = await req.json()
-        const reqGetAllUsers = await fetch(`http://139.162.191.134:8080/api/users`)
+        const reqGetAllUsers = await fetch(`${ENTRY_API_URL}api/users`)
         const allUsers = await reqGetAllUsers.json()
         const currListEvents = result.map(element => (
             {
@@ -91,6 +91,7 @@ const BackOfficeAddCommande = () => {
                 "start" : element.dateDebut,
                 "end" : element.dateFin,
                 "title" : `Réservation faite par : ${allUsers.filter(user => user.idPersonne === element.idPersonne)[0].email}`,
+                allDay : element.dateDebut.split("T")[0] === element.dateFin.split("T")[0]
             }
         ))
         setListEvents(currListEvents)
@@ -150,7 +151,8 @@ const BackOfficeAddCommande = () => {
             "state" : status,
             "idOffre" : dataOffreLocation.idOffre
         }
-        const reqPostCommande = await fetch('http://139.162.191.134:8080/api/contrat', {
+
+        const reqPostCommande = await fetch(`${ENTRY_API_URL}api/contrat`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -159,7 +161,7 @@ const BackOfficeAddCommande = () => {
             body: JSON.stringify(data)
         });
         const result = await reqPostCommande.json()
-        if (result.id) {
+        if (result.idContrat) {
             validateMessage("Commande bien enregistrez !", "ok", -1)
         } else {
             validateMessage("Une erreur est survenue", "pas ok", 0)
@@ -260,9 +262,7 @@ const BackOfficeAddCommande = () => {
                                             onChange={(e) => setStatus(e.target.value)}
                                             sx={styleForSelectMui}
                                         >
-                                            <MenuItem value={0}>Annulé</MenuItem>
                                             <MenuItem value={1}>Déjà payé / Validé</MenuItem>
-                                            <MenuItem value={2}>Fini</MenuItem>
                                             <MenuItem value={3}>A payé</MenuItem>
                                         </Select>
                                     </ContainerInputMui>

@@ -1,4 +1,5 @@
 import {useContext, createContext, useState, useEffect} from "react";
+import {ENTRY_API_URL} from "../utils";
 
 
 const ContextAuth = createContext()
@@ -11,11 +12,13 @@ export const ContextAuthProvider = ({children}) => {
     const [role, setRole] = useState(undefined)
 
 
+
+    // Récupère le role de l'utilisateur, firstReload permet en cas de refresh de la page d'attendre que le role de l'utilisateur soit récupérer avant de vérifier l'accès
     const fetchRoleByToken = async (token) => {
 
         if (token) {
 
-            const req = await fetch(`http://139.162.191.134:8080/api/user?token=${token}`)
+            const req = await fetch(`${ENTRY_API_URL}api/user?token=${token}`)
             const [result] = await req.json()
 
             if (result.idPersonne) {
@@ -36,7 +39,6 @@ export const ContextAuthProvider = ({children}) => {
 
         fetchRoleByToken(localStorage.getItem("token")).catch(() => setRole(0))
 
-
     }, [])
 
     const login = (value) => {
@@ -49,7 +51,7 @@ export const ContextAuthProvider = ({children}) => {
     }
     const getIdCurrentPpl = async () => {
         const token = localStorage.getItem("token")
-        const req = await fetch(`http://139.162.191.134:8080/api/user?token=${token}`)
+        const req = await fetch(`${ENTRY_API_URL}api/user?token=${token}`)
         const [result] = await req.json()
         return result
     }

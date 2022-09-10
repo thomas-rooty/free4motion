@@ -1,7 +1,7 @@
 import {Input, InputLabel, MenuItem, Select} from "@mui/material";
 import {useState} from "react";
 import {StandarContainers} from "./Containers";
-import {formatDateToDateTime, styleForSelectMui, styleInputMui} from "../utils";
+import {ENTRY_API_URL, styleForSelectMui, styleInputMui} from "../utils";
 import {ButtonReservation} from "../components";
 import {useMessageStateClient} from "../context/MessageStateClient";
 import {ContainerInputMui} from "./MoreInfoCar";
@@ -9,7 +9,8 @@ import {LabelCustom} from "./Register";
 
 const BackOfficeAddCar = () => {
 
-    const newDate = new Date()
+    const newDate = new Date().toISOString().split("T")[0]
+    console.log(newDate)
     const {validateMessage} = useMessageStateClient()
 
     const [brand, setBrand] = useState("")
@@ -18,7 +19,7 @@ const BackOfficeAddCar = () => {
     const [color, setColor] = useState("")
     const [licencePlate, setLicencePlate] = useState("")
     const [totalKm, setTotalKm] = useState(0)
-    const [purchaseDate, setPurchaseDate]= useState(formatDateToDateTime(newDate))
+    const [purchaseDate, setPurchaseDate]= useState(newDate)
     const [purcahsePrice, setPurchasePrice] = useState(0)
     const [type, setType] = useState("car")
     const [description, setDescription] = useState("")
@@ -34,7 +35,7 @@ const BackOfficeAddCar = () => {
             const formData = {
                 "modele" : model,
                 "description" : description,
-                "state" : 0,
+                "state" : 1,
                 "nSerie" : serialNumber,
                 "couleur" : color,
                 "plaque" : licencePlate,
@@ -47,7 +48,7 @@ const BackOfficeAddCar = () => {
                 "marque" : brand
             }
 
-            const req = await fetch("http://139.162.191.134:8080/api/vehicules", {
+            const req = await fetch(`${ENTRY_API_URL}api/vehicules`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -101,7 +102,7 @@ const BackOfficeAddCar = () => {
                     </ContainerInputMui>
                     <ContainerInputMui width={45}>
                         <LabelCustom htmlFor="form-input-purchaseDate">Date d'achat</LabelCustom>
-                        <Input id="form-input-purchaseDate" type="date" fullWidth inputProps={{min : formatDateToDateTime(newDate)}}  sx={styleInputMui} value={purchaseDate} onChange={(e) => setPurchaseDate(e.target.value)}/>
+                        <Input id="form-input-purchaseDate" type="date" fullWidth sx={styleInputMui} value={purchaseDate} onChange={(e) => setPurchaseDate(e.target.value)}/>
                     </ContainerInputMui>
                     <ContainerInputMui width={45}>
                         <LabelCustom htmlFor="form-input-purchasePrice">Prix d'achat</LabelCustom>

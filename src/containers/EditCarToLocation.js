@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {useLocation, useParams} from "react-router-dom";
 import {Input, InputLabel, MenuItem, Select} from "@mui/material";
-import {styleForSelectMui, styleInputMui} from "../utils";
+import {ENTRY_API_URL, styleForSelectMui, styleInputMui} from "../utils";
 import {ButtonReservation} from "../components";
 import {LabelCustom} from "./Register";
 import {useMessageStateClient} from "../context/MessageStateClient";
@@ -20,13 +20,13 @@ const EditCarToLocation = () => {
     const [idOffre, setIdOffre] = useState(undefined)
 
     const fetchByIdInfo = async (id) => {
-        const req = await fetch(`http://139.162.191.134:8080/api/vehicules/${id}`)
+        const req = await fetch(`${ENTRY_API_URL}api/vehicules/${id}`)
         const data = await req.json()
         setParamsCar(data)
     }
 
     const fetchGetValueLocation = async (id) => {
-        const req = await fetch(`http://139.162.191.134:8080/api/vehicules/${id}/offre`)
+        const req = await fetch(`${ENTRY_API_URL}api/vehicules/${id}/offre`)
         const data = await req.json()
         const {idOffre, prixParJour, prixParKm} = data
         setPrixKm(prixParKm)
@@ -42,7 +42,7 @@ const EditCarToLocation = () => {
             "prixParJour" : parseFloat(prixByDays)
         }
 
-        const reqPostLocation = await fetch(`http://139.162.191.134:8080/api/offre/${idOffre}`, {
+        const reqPostLocation = await fetch(`${ENTRY_API_URL}api/offre/${idOffre}`, {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -80,8 +80,16 @@ const EditCarToLocation = () => {
 
     const removeOffer = async (id) => {
 
-        const req = await fetch(`http://139.162.191.134:8080/api/offre/${id}`, {
-            method : "DELETE"
+        const data = {
+            "state" : 0
+        }
+        const req = await fetch(`${ENTRY_API_URL}api/state/offre/${id}`, {
+            method : "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
         })
         const result = await req.json()
 
@@ -90,13 +98,6 @@ const EditCarToLocation = () => {
         } else {
             validateMessage("Erreur lors de la suppression", "pas ok", 0)
         }
-
-        console.log(result)
-
-
-        setTimeout(() => {
-
-        }, 1000)
 
     }
 

@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {styleInputMui} from "../utils";
+import {ENTRY_API_URL, styleInputMui} from "../utils";
 import {Input} from "@mui/material";
 import {StandarContainers} from "./Containers";
 import {ButtonReservation} from "../components";
@@ -24,7 +24,7 @@ const Login = () => {
     const handleLogin = async () => {
 
 
-        const req = await fetch(`http://139.162.191.134:8080/api/login?email=${userName}&pwd=${passWord}`)
+        const req = await fetch(`${ENTRY_API_URL}api/login?email=${userName}&pwd=${passWord}`)
         const data = await req.text()
         let jsonData;
         try {

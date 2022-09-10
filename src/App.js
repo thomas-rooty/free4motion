@@ -4,23 +4,25 @@ import {
     MoreInfoCar,
     RecapCommande,
     ListUserCommandes,
-    BackOfficeAddCar, Login, BackOfficeAddCommande
+    BackOfficeAddCar,
+    Login,
+    BackOfficeAddCommande,
+    Register,
+    PaymentUser,
+    BackOfficeAdminVehicles,
+    BackOfficeUsers,
+    AddCarToLocation, EditCarToLocation, BackOfficeEditCommande
 } from "./containers";
+import {Facture, LogOut, PrivateRoutes} from "./components";
+
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import React from "react";
-import {FullContainers} from "./containers/Containers";
+
 import {ContextMenuProvider} from "./context/ContextMenu";
-import AddCarToLocation from "./containers/AddCarToLocation";
-import PaymentUser from "./containers/PaymentUser";
 import {ContextHomePageProvider} from "./context/ContexHomePage";
 import {MessageStateClientProvider} from "./context/MessageStateClient";
-import Register from "./containers/Register";
-import LogOut from "./components/LogOut";
-import EditCarToLocation from "./containers/EditCarToLocation";
-import BackOfficeAdminVehicles from "./containers/BackOfficeAdminVehicles";
-import BackOfficeUsers from "./containers/BackOfficeUsers";
-import PrivateRoutes from "./components/PrivateRoutes";
-import BackOfficeEditCommande from "./containers/BackOfficeEditCommande";
+import {FullContainers} from "./containers/Containers";
+
 
 
 function App() {
@@ -29,9 +31,12 @@ function App() {
   return (
       <React.Fragment>
           <BrowserRouter>
+              {/* Contexte pour savoir si le menu est ouvert etc..., et le fermé à chaque navigation */}
               <ContextMenuProvider>
+                  {/* Contexte notification message au client */}
                   <MessageStateClientProvider>
                       <Routes>
+                          {/* Routes non restreinte au role */}
                           <Route path="/" element={
                               <FullContainers>
                                   <ContextHomePageProvider>
@@ -40,6 +45,17 @@ function App() {
                                   </ContextHomePageProvider>
                               </FullContainers>
                           }/>
+                          <Route path="/login" element={
+                              <Login/>
+                          }/>
+                          <Route path="/logout" element={
+                              <LogOut/>
+                          }/>
+                          <Route path="/register" element={
+                              <Register/>
+                          }/>
+
+                          {/* Routes restreintes à l'admin */}
                           <Route element={<PrivateRoutes roleNeeded={[0,1]} msgRedirect="adminNotAccess"/>}>
                               <Route path="/validation_commande" element={
                                   <RecapCommande/>
@@ -50,10 +66,16 @@ function App() {
                               <Route path="/my-orders" element={
                                   <ListUserCommandes/>
                               }/>
-                              <Route path="/payment" element={
+                              <Route path="/payment/:currID" element={
                                   <PaymentUser/>
                               }/>
+
+                              <Route path="/facture" element={
+                                  <Facture/>
+                              }/>
                           </Route>
+
+                          {/* Routes restreintes aux invités et aux utilisateurs */}
                           <Route element={<PrivateRoutes roleNeeded={[2]} msgRedirect="adminRoleNeeded"/>}>
                               <Route path="/free_admin/vehicles" element={
                                   <BackOfficeAdminVehicles/>
@@ -79,16 +101,6 @@ function App() {
                               }/>
                           </Route>
 
-
-                          <Route path="/login" element={
-                              <Login/>
-                          }/>
-                          <Route path="/logout" element={
-                              <LogOut/>
-                          }/>
-                          <Route path="/register" element={
-                              <Register/>
-                          }/>
                       </Routes>
                   </MessageStateClientProvider>
               </ContextMenuProvider>

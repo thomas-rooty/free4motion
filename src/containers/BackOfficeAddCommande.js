@@ -263,7 +263,7 @@ const BackOfficeAddCommande = () => {
                                             sx={styleForSelectMui}
                                         >
                                             <MenuItem value={1}>Déjà payé / Validé</MenuItem>
-                                            <MenuItem value={3}>A payé</MenuItem>
+                                            <MenuItem value={3}>A payer</MenuItem>
                                         </Select>
                                     </ContainerInputMui>
                                 </div>

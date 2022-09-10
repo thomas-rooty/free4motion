@@ -22,9 +22,9 @@ const CheckOutForm = ({montant,idContrat, cbSelect}) => {
     const [saveCrediCard, setSaveCreditCard] = useState(false)
 
     const MakePaiementBackEnd = async (paymentMethod) => {
-        const {idPersonne} = await getIdCurrentPpl()
+        const {idPersonne, idStripe} = await getIdCurrentPpl()
 
-        const data = {...paymentMethod, "idPersonne" : idPersonne, "saveCreditCard" : saveCrediCard, "idContrat" : parseInt(idContrat)}
+        const data = {...paymentMethod, "idStripe" : idStripe, "idPersonne" : idPersonne, "saveCreditCard" : saveCrediCard, "idContrat" : parseInt(idContrat)}
         console.log(data)
 
         const reqPaymentNode = await fetch(`${ENTRY_API_URL}stripe/charge`, {

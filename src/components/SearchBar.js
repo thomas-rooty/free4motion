@@ -37,6 +37,7 @@ const IconButton = styled.button`
 const SearchBar = () => {
 
 
+    // Utilisation du contexte pour remonter l'information
     const {handleChangeSearch} = useContextHomePage()
 
     return(

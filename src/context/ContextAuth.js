@@ -12,6 +12,8 @@ export const ContextAuthProvider = ({children}) => {
     const [role, setRole] = useState(undefined)
 
 
+
+    // Récupère le role de l'utilisateur, firstReload permet en cas de refresh de la page d'attendre que le role de l'utilisateur soit récupérer avant de vérifier l'accès
     const fetchRoleByToken = async (token) => {
 
         if (token) {
@@ -37,7 +39,6 @@ export const ContextAuthProvider = ({children}) => {
 
         fetchRoleByToken(localStorage.getItem("token")).catch(() => setRole(0))
 
-
     }, [])
 
     const login = (value) => {
@@ -52,7 +53,6 @@ export const ContextAuthProvider = ({children}) => {
         const token = localStorage.getItem("token")
         const req = await fetch(`${ENTRY_API_URL}api/user?token=${token}`)
         const [result] = await req.json()
-        console.log(result.idPersonne)
         return result
     }
 

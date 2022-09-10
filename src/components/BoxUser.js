@@ -57,9 +57,10 @@ const ContainerFlex = styled.div`
     display: flex;
     flex-flow: row wrap;
     justify-content: space-around;
+    align-items: center;
 `;
 
-const BoxUser = ({data, handleChange}) => {
+const BoxUser = ({data, handleChange, index}) => {
 
     const [userWantEdit, setUserWantEdit] = useState(false)
     const [showCommands, setUserShowCommands] = useState(false)
@@ -91,22 +92,20 @@ const BoxUser = ({data, handleChange}) => {
 
     const handleEditUser = async () => {
 
+        const dataToPost = {...data}
+        console.log(dataToPost)
 
-        const req = await fetch(`http://localhost:8080/api/user/${idPersonne}`,{
+
+        const req = await fetch(`${ENTRY_API_URL}api/user/${idPersonne}`,{
             method : "PUT",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({})
+            body: JSON.stringify(dataToPost)
         })
-
-
-        setTimeout(() => {
-            setUserWantEdit(false)
-            validateMessage("Modification bien sauvegarder" , "ok", 0)
-        }, 1000)
-
+        const result = await req.text()
+        console.log(result)
 
     }
 
@@ -165,19 +164,19 @@ const BoxUser = ({data, handleChange}) => {
                             <ContainerFlex>
 
                                 <ContainerInputMui width={15}>
-                                    <Input id="form-input-serialNumber" fullWidth type="text" value={nom} sx={styleInputMui} onChange={(e) => handleChange(idPersonne, "nom", e.target.value)}/>
+                                    <Input id="form-input-serialNumber" fullWidth type="text" value={nom} sx={styleInputMui} onChange={(e) => handleChange(index, "nom", e.target.value)}/>
                                 </ContainerInputMui>
                                 <ContainerInputMui width={15}>
-                                    <Input id="form-input-serialNumber" fullWidth type="text" value={prenom} sx={styleInputMui} onChange={(e) => handleChange(idPersonne, "prenom", e.target.value)}/>
+                                    <Input id="form-input-serialNumber" fullWidth type="text" value={prenom} sx={styleInputMui} onChange={(e) => handleChange(index, "prenom", e.target.value)}/>
                                 </ContainerInputMui>
                                 <ContainerInputMui width={15}>
-                                    <Input id="form-input-serialNumber" fullWidth type="date" value={naissance.split("T")[0]} sx={styleInputMui} onChange={(e) => handleChange(idPersonne, "naissance", e.target.value)}/>
+                                    <Input id="form-input-serialNumber" fullWidth type="date" value={naissance.split("T")[0]} sx={styleInputMui} onChange={(e) => handleChange(index, "naissance", e.target.value)}/>
                                 </ContainerInputMui>
                                 <ContainerInputMui width={15}>
-                                    <Input id="form-input-serialNumber" fullWidth type="text" value={addresse} sx={styleInputMui} onChange={(e) => handleChange(idPersonne, "addresse", e.target.value)}/>
+                                    <Input id="form-input-serialNumber" fullWidth type="text" value={addresse} sx={styleInputMui} onChange={(e) => handleChange(index, "addresse", e.target.value)}/>
                                 </ContainerInputMui>
                                 <ContainerInputMui width={15}>
-                                    <Input id="form-input-serialNumber" fullWidth type="number" value={numeroPermis} sx={styleInputMui} onChange={(e) => handleChange(idPersonne, "numeroPermis", e.target.value)}/>
+                                    <Input id="form-input-serialNumber" fullWidth type="number" value={numeroPermis} sx={styleInputMui} onChange={(e) => handleChange(index, "numeroPermis", e.target.value)}/>
                                 </ContainerInputMui>
                             </ContainerFlex>
                             <ContainerFlex>

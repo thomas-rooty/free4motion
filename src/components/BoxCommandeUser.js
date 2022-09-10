@@ -70,10 +70,9 @@ const BoxCommandeUser = ({dataContrat}) => {
         getInfoVehicle()
     }, [])
 
-    const {idContrat, dateDebut, dateFin, state, montantTotal, montantPaye} = dataContrat
+    const {idContrat, idPersonne, dateDebut, dateFin, state, montantTotal, montantPaye, kmContrat} = dataContrat
 
-    const {marque, plaque, modele} = infoVehicle
-    console.log(dataContrat)
+    const {marque, plaque, modele, idVehicule} = infoVehicle
 
 
     return(
@@ -108,7 +107,9 @@ const BoxCommandeUser = ({dataContrat}) => {
                             &&
                             <h2>{state === "0" ? "Annuler" : state === 1 ? "Validé" : state === 2 && "Fini"}</h2>
                     }
-                    <Link to={`/payment/${idContrat}`}><ButtonReservation msg="A payé" /></Link>
+                    {
+                        state === 3 && <Link to={`/payment/${idContrat}`}><ButtonReservation msg="A payé" /></Link>
+                    }
                 </div>
                 <div className="child">
                     <H4>Plus d'infos</H4>
@@ -120,10 +121,9 @@ const BoxCommandeUser = ({dataContrat}) => {
             {
                 showCommands &&
                 <div style={{marginTop : "20px"}}>
-
                     <div>
-                        <h2>Info véhicule</h2>
-                        <div style={{display : "flex"}}>
+                        <h3 style={{textDecoration : "underline"}}>Info véhicule : </h3>
+                        <div style={{display : "flex", flexFlow : "row wrap"}}>
                             <ContainerInputMui width={20}>
                                 <H4>Marque véhicule :</H4>
                                 <h2>{marque}</h2>
@@ -139,7 +139,24 @@ const BoxCommandeUser = ({dataContrat}) => {
 
                         </div>
                     </div>
+                    <div style={{marginTop : "20px"}}>
+                        <h3 style={{textDecoration : "underline"}}>Récap contrat : </h3>
+                        <div style={{display : "flex", flexFlow : "row wrap"}}>
+                            <ContainerInputMui width={25}>
+                                <H4>Date de début</H4>
+                                <h2>{dateDebut.split(":")[0].replace("T", " ")}H</h2>
+                            </ContainerInputMui>
+                            <ContainerInputMui width={20}>
+                                <H4>Date de fin</H4>
+                                <h2>{dateFin.split(":")[0].replace("T", " ")}H</h2>
+                            </ContainerInputMui>
+                            <ContainerInputMui width={20}>
+                                <H4>Nombre de killomètres</H4>
+                                <h2>{kmContrat} km</h2>
+                            </ContainerInputMui>
 
+                        </div>
+                    </div>
                     <div style={{display : "flex", justifyContent : "flex-end"}}>
                         <div style={{textAlign : "center"}}>
                             <H4>Montant Total</H4>
@@ -150,8 +167,7 @@ const BoxCommandeUser = ({dataContrat}) => {
                             <div style={{display : "flex"}}><h2>{montantPaye ? montantPaye : 0} €</h2><h5 style={{marginLeft : "10px"}}> TTC</h5></div>
                         </div>
                     </div>
-
-                    <div>Hello</div>
+                    <div style={{width : "20%", minWidth : "150px"}}><Link to="/facture" state={{"idPersonne": idPersonne, "idVehicule" : idVehicule, "idContrat" : idContrat}}><ButtonReservation msg="Voire ma facture"/></Link></div>
                 </div>
 
             }

@@ -91,6 +91,7 @@ const BackOfficeAddCommande = () => {
                 "start" : element.dateDebut,
                 "end" : element.dateFin,
                 "title" : `Réservation faite par : ${allUsers.filter(user => user.idPersonne === element.idPersonne)[0].email}`,
+                allDay : element.dateDebut.split("T")[0] === element.dateFin.split("T")[0]
             }
         ))
         setListEvents(currListEvents)
@@ -150,6 +151,7 @@ const BackOfficeAddCommande = () => {
             "state" : status,
             "idOffre" : dataOffreLocation.idOffre
         }
+
         const reqPostCommande = await fetch(`${ENTRY_API_URL}api/contrat`, {
             method: 'POST',
             headers: {
@@ -159,7 +161,7 @@ const BackOfficeAddCommande = () => {
             body: JSON.stringify(data)
         });
         const result = await reqPostCommande.json()
-        if (result.id) {
+        if (result.idContrat) {
             validateMessage("Commande bien enregistrez !", "ok", -1)
         } else {
             validateMessage("Une erreur est survenue", "pas ok", 0)
@@ -260,9 +262,7 @@ const BackOfficeAddCommande = () => {
                                             onChange={(e) => setStatus(e.target.value)}
                                             sx={styleForSelectMui}
                                         >
-                                            <MenuItem value={0}>Annulé</MenuItem>
                                             <MenuItem value={1}>Déjà payé / Validé</MenuItem>
-                                            <MenuItem value={2}>Fini</MenuItem>
                                             <MenuItem value={3}>A payé</MenuItem>
                                         </Select>
                                     </ContainerInputMui>

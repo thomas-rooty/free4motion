@@ -31,7 +31,10 @@ export const H2 = styled.h2`
 
 const HomeContainerListCars = () => {
 
+    // récupération de la valeur du contexte de la recherche par modèle
     const {search} = useContextHomePage()
+
+
     const [data, setData] = useState([])
 
     const getListVehicles = async () => {
@@ -55,6 +58,7 @@ const HomeContainerListCars = () => {
         if (value) {
             searchByName(value)
         } else {
+            // Si modele n'est pas définie recupère l'ensemble des véhicules
             getListVehicles()
         }
     }, [search])
@@ -63,6 +67,7 @@ const HomeContainerListCars = () => {
     const vehiclesLyon = data.filter(element => element.agence === 1)
 
 
+    // Affiche l'ensemble des véhicules
     return(
         <ContainerHomePage>
             {

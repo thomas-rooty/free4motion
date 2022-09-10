@@ -18,6 +18,9 @@ const ListUserCommandes = () => {
     const getListCommandes = async () => {
         const req = await fetch(`${ENTRY_API_URL}api/contrat/user/${id}`)
         const result = await req.json()
+        console.log("result", result)
+
+        const newArray = result.sort((a, b) => a.distance - b.distance)
         setListCommandes(result)
     }
 

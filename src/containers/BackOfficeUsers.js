@@ -52,7 +52,7 @@ const BackOfficeUsers = () => {
 
             {
                 filterData.map(
-                    user => user.role !== 1 && <BoxUser key={user.idPersonne} data={user} handleChange={handleChangeData}/>
+                    (user,i) => user.role !== 1 && <BoxUser index={i} key={user.idPersonne} data={user} handleChange={handleChangeData}/>
                 )
             }
         </StandarContainers>

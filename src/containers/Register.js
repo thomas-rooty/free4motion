@@ -24,6 +24,8 @@ const Register = () => {
     const {validateMessage} = useMessageStateClient()
 
     const handleSubmit = async () => {
+
+
         if (prenom && nom && email && naissance && addresse && numeroTel && numeroPermis && addresseFacturation && password) {
 
             const dataToPost = {

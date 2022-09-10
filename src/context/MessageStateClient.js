@@ -1,11 +1,6 @@
 import {useContext, createContext} from "react";
 import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
 import {useNavigate} from "react-router-dom";
-
-
-
-
 
 const MessageStateClient = createContext()
 
@@ -13,18 +8,7 @@ export const MessageStateClientProvider = ({children}) => {
 
     const navigate = useNavigate()
 
-    const MySwal = withReactContent(Swal)
-
-    const showLoadingMessage = (msg) => {
-        MySwal.fire({
-            title: {msg},
-            didOpen: () => {
-                MySwal.showLoading()
-            },
-        })
-    }
-
-
+    // Show notification to client with the msg, if notification it's a error, sucess with state "ok", info with state "info", goTo for navigate in the application when alter is validate or closed, and timer define how much time the alter need to show up
     const validateMessage = (msg, state = "ok", goTo = -1, timer) => {
 
         Swal.close()
@@ -68,7 +52,7 @@ export const MessageStateClientProvider = ({children}) => {
 
     return(
 
-        <MessageStateClient.Provider value={{validateMessage, showLoadingMessage}}>
+        <MessageStateClient.Provider value={{validateMessage}}>
             {children}
         </MessageStateClient.Provider>
 

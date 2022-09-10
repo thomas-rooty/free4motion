@@ -38,7 +38,7 @@ const HomeContainerListCars = () => {
     const [data, setData] = useState([])
 
     const getListVehicles = async () => {
-        const req = await fetch(`${ENTRY_API_URL}api/offre`)
+        const req = await fetch(`${ENTRY_API_URL}api/vehicules`)
         const data = await req.json()
 
 
@@ -48,7 +48,8 @@ const HomeContainerListCars = () => {
     const searchByName = async (value) => {
         const req = await fetch(`${ENTRY_API_URL}api/vehicules?modele=${value}`)
         const data = await req.json()
-        setData(data)
+        const activeOffres = data.filter(offre => offre.stateOffre === 1)
+        setData(activeOffres)
     }
 
 

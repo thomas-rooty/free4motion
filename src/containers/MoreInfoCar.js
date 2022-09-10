@@ -163,7 +163,7 @@ const MoreInfoCar = () => {
     }, [paramsCar])
 
     useEffect(() => {
-        if (role !== 2){
+        if (role ===0){
             setLastNavigate(location.pathname)
         }
         fetchByIdInfo(params.currID)

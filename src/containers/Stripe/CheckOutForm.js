@@ -33,7 +33,7 @@ const CheckOutForm = ({montant,idContrat, cbSelect}) => {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(paymentMethod)
+            body: JSON.stringify(data)
         })
         const result = await reqPaymentNode.json()
         console.log(result)

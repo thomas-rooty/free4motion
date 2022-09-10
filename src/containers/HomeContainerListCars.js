@@ -19,7 +19,7 @@ export const ContainerListVehicles = styled.div`
   display: flex;
   max-width: 100%;
   overflow-y: auto;
-  overflow: hidden;
+  overflow-x: hidden;
 `;
 export const H2 = styled.h2`
     font-size: 18px;

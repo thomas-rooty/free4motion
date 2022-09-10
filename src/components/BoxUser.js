@@ -93,6 +93,9 @@ const BoxUser = ({data, handleChange, index}) => {
     const handleEditUser = async () => {
 
         const dataToPost = {...data}
+        dataToPost["naissance"] = data.naissance.split('T')[0]
+
+
         console.log(dataToPost)
 
 
@@ -104,8 +107,12 @@ const BoxUser = ({data, handleChange, index}) => {
             },
             body: JSON.stringify(dataToPost)
         })
-        const result = await req.text()
-        console.log(result)
+        const result = await req.json()
+        if (result.email){
+            validateMessage("Modification bien enregistrer", "ok", 0)
+        } else {
+            validateMessage("Erreur", "pas ok", 0)
+        }
 
     }
 
@@ -218,3 +225,4 @@ const BoxUser = ({data, handleChange, index}) => {
 
 }
 export default BoxUser
+

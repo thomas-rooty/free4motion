@@ -24,22 +24,16 @@ const CheckOutForm = ({montant,idContrat, cbSelect}) => {
     const MakePaiementBackEnd = async (paymentMethod) => {
         const {idPersonne} = await getIdCurrentPpl()
 
-        const data = {
-            "idCb" : paymentMethod.id,
-            "expMonth" : paymentMethod.card.exp_month,
-            "expYear" : paymentMethod.card.exp_year,
-            "last4" : paymentMethod.card.last4,
-            "idPersonne" : idPersonne,
-            "saveCreditCard" : saveCrediCard,
-            "idContrat" : parseInt(idContrat)
-        }
+        const data = {...paymentMethod, "idPersonne" : idPersonne, "saveCreditCard" : saveCrediCard, "idContrat" : parseInt(idContrat)}
+        console.log(data)
+
         const reqPaymentNode = await fetch(`${ENTRY_API_URL}stripe/charge`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(paymentMethod)
         })
         const result = await reqPaymentNode.json()
         console.log(result)

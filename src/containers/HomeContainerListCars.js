@@ -18,8 +18,8 @@ export const ContainerListVehicles = styled.div`
   margin-top: 16px;
   display: flex;
   max-width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
 `;
 export const H2 = styled.h2`
     font-size: 18px;
@@ -42,13 +42,13 @@ const HomeContainerListCars = () => {
         const data = await req.json()
 
 
-        const activeOffres = data.filter(offre => offre.stateOffre === 1)
+        const activeOffres = data.filter(offre => offre.stateOffre === 1 && offre.stateVehicule === 1)
         setData(activeOffres)
     }
     const searchByName = async (value) => {
         const req = await fetch(`${ENTRY_API_URL}api/vehicules?modele=${value}`)
         const data = await req.json()
-        const activeOffres = data.filter(offre => offre.stateOffre === 1)
+        const activeOffres = data.filter(offre => offre.stateOffre === 1 && offre.stateVehicule === 1)
         setData(activeOffres)
     }
 

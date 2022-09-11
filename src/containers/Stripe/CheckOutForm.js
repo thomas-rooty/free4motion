@@ -11,7 +11,7 @@ import {useState} from "react";
 import {ENTRY_API_URL} from "../../utils";
 
 
-const CheckOutForm = ({montant,idContrat, cbSelect}) => {
+const CheckOutForm = ({montant,idContrat, cbSelect, dataPaymentIntent}) => {
 
     const {validateMessage} = useMessageStateClient()
     const {getIdCurrentPpl} = useContextAuth()
@@ -21,81 +21,58 @@ const CheckOutForm = ({montant,idContrat, cbSelect}) => {
 
     const [saveCrediCard, setSaveCreditCard] = useState(false)
 
-    const MakePaiementBackEnd = async (paymentMethod) => {
-        const {idPersonne, idStripe} = await getIdCurrentPpl()
-
-        const data = {...paymentMethod, "idStripe" : idStripe, "idPersonne" : idPersonne, "saveCreditCard" : saveCrediCard, "idContrat" : parseInt(idContrat)}
-        console.log(data)
-
-        const reqPaymentNode = await fetch(`${ENTRY_API_URL}stripe/charge`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        const result = await reqPaymentNode.json()
-        console.log(result)
-        if (result.success) {
-            validateMessage("Payement bien effectué ! merci", "ok", "/my-orders")
-        } else {
-            validateMessage("Une erreur est survenue lors du paiement", "pas ok", 0)
-        }
-
-    }
-    const MakePaiementWithPreviousCard = async (paymentMethod) => {
-
-        console.log("previous card")
-
-        const {expMonth, expYear, idCb, idPersonne, last4} = paymentMethod
-
+    const updateStateCommand = async () => {
         const data = {
-            "idCb" : idCb,
-            "expMonth" : expMonth,
-            "expYear" : expYear,
-            "last4" : last4,
-            "idPersonne" : idPersonne,
-            "saveCreditCard" : false,
-            "idContrat" : parseInt(idContrat)
+            state : 1
         }
-        const reqPaymentNode = await fetch(`${ENTRY_API_URL}stripe/charge`, {
-            method: 'POST',
+
+        const req = await fetch(`${ENTRY_API_URL}api/state/contrat/${idContrat}`,{
+            method : "PUT",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
         })
-        const result = await reqPaymentNode.json()
-        console.log(result)
-        if (result.success) {
-            validateMessage("Payement bien effectué ! merci", "ok", "/my-orders")
+    }
+
+
+    const MakePaiementBackEnd = async (id, cbId) => {
+
+        const x = {
+            "payment_method" : {
+
+            }
+        }
+        if (cbId) {
+            x.payment_method = cbId
         } else {
+            x.payment_method = {
+                "card" : elements.getElement(CardElement)
+            }
+        }
+
+        const payload = await stripe.confirmCardPayment(id, x);
+        if (payload.error) {
             validateMessage("Une erreur est survenue lors du paiement", "pas ok", 0)
+        } else {
+            updateStateCommand().then(() => {
+                validateMessage("Payement bien effectué", "ok", "/my-orders")
+            })
         }
     }
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e) =>  {
 
         e.preventDefault()
 
-        if (!cbSelect) {
-            const {error, paymentMethod} = await stripe.createPaymentMethod({
-                type : "card",
-                card : elements.getElement(CardElement)
-            })
 
-            if (!error) {
-                MakePaiementBackEnd(paymentMethod).catch(() => {
-                    validateMessage("Une erreur est survenue lors du paiement", "pas ok", 0)
-                })
-            }
+        if(dataPaymentIntent) {
+            MakePaiementBackEnd(dataPaymentIntent, cbSelect.id)
         } else {
-            MakePaiementWithPreviousCard(cbSelect).catch(() => {
-                validateMessage("Une erreur est survenue lors du paiement", "pas ok", 0)
-            })
+            validateMessage("Une erreur est survenue lors de la création de l'intention de payement stripe", "pas ok", 0)
         }
+
 
     }
 
@@ -116,6 +93,8 @@ const CheckOutForm = ({montant,idContrat, cbSelect}) => {
             iconColor: "#fa755a"
         }
     };
+
+    console.log(cbSelect)
 
     return(
         <div style={{maxWidth : "340px", flexFlow : "row wrap"}}>

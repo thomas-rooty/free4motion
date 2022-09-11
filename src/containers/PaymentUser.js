@@ -26,6 +26,7 @@ const PaymentUser = () => {
     const [idPersonne, setIdPersonne] = useState("")
     const [cbs, setCbs] = useState([])
     const [selectedCbs, setSelectedCbs] = useState("");
+    const [dataPaymentIntent, setDataPaymentIntent]  = useState("");
 
     const getInfo = async () => {
         const req = await fetch(`${ENTRY_API_URL}api/contrat/${currID}`)
@@ -43,14 +44,38 @@ const PaymentUser = () => {
     }
 
     const getCbs = async () => {
+
         const req = await fetch(`${ENTRY_API_URL}api/cb/user/${idPersonne}`)
         const result = await req.json()
 
         setCbs(result)
     }
 
+    const getIntentPayment = async () => {
+        const {idPersonne} = await getIdCurrentPpl()
+        const data = {
+            "idPersonne" : idPersonne,
+            "idContrat" : parseInt(currID)
+        }
+        const req = await fetch(`${ENTRY_API_URL}api/payment-intent`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        const result = await req.json()
+        const {client_secret} = result
+        setDataPaymentIntent(client_secret)
+
+
+    }
+
     useEffect(() => {
         getInfo()
+        getIntentPayment()
+
     }, [])
 
 
@@ -67,7 +92,7 @@ const PaymentUser = () => {
         }
     }, [idPersonne])
 
-    const [activeDataCb] = cbs.filter(cb => cb.idCb === selectedCbs)
+    const [activeDataCb] = cbs.filter(cb => cb.id === selectedCbs)
 
     return(
         <div>
@@ -89,11 +114,11 @@ const PaymentUser = () => {
                             <MenuItem value="">-- Use a new credit card --</MenuItem>
                             {
                                 cbs.map(
-                                    cb => <MenuItem value={cb.idCb} key={cb.idCb}>
+                                    cb => <MenuItem value={cb.id} key={cb.id}>
                                         <div style={{display : "flex", alignItems : "center"}}>
                                             <img src={CarteBancaire} style={{width : "32px"}}/>
-                                            <h4 style={{marginLeft : "10px"}}>**** **** **** {cb.last4}</h4>
-                                            <h4 style={{marginLeft : "10px"}}>{cb.expMonth}/{cb.expYear}</h4>
+                                            <h4 style={{marginLeft : "10px"}}>**** **** **** {cb.card.last4}</h4>
+                                            <h4 style={{marginLeft : "10px"}}>{cb.card.exp_month}/{cb.card.exp_year}</h4>
                                         </div>
                                     </MenuItem>
                                 )
@@ -106,7 +131,7 @@ const PaymentUser = () => {
                 Object.keys(infoCommande).length > 0
                 &&
                 <ContainerPayment>
-                    <StripeContainer cbSelect={activeDataCb} idContrat={currID} montant={parseFloat(infoCommande.montantTotal - infoCommande.montantPaye)}/>
+                    <StripeContainer dataPaymentIntent={dataPaymentIntent} cbSelect={activeDataCb} idContrat={currID} montant={parseFloat(infoCommande.montantTotal - infoCommande.montantPaye)}/>
                 </ContainerPayment>
             }
         </div>

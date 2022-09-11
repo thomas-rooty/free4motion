@@ -8,6 +8,8 @@ const CustomButton = styled.button`
     border: none;
     width: 100%;
     cursor: pointer;
+    margin-bottom: 10px;
+    min-width: 120px;
 `;
 
 

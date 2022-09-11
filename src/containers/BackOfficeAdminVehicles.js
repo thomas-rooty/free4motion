@@ -15,8 +15,8 @@ const ContainerListVehicles = styled.div`
   margin-top: 16px;
   display: flex;
   max-width: 100%;
-  overflow-y: auto;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
 `
 
 const BackOfficeAdminVehicles = () => {
@@ -26,21 +26,20 @@ const BackOfficeAdminVehicles = () => {
 
     const reqVehicles = async () => {
 
-        const reqVehicles = await fetch(`${ENTRY_API_URL}api/vehicules/`)
+        const reqVehicles = await fetch(`${ENTRY_API_URL}api/vehicules/all`)
         const respVehicles = await reqVehicles.json()
-
-        const activeVehicles = respVehicles.filter(vehicle => vehicle.state === 1)
-
         console.log(respVehicles)
 
 
-        const reqOffers = await fetch(`${ENTRY_API_URL}api/offre`)
-        const respOffers = await reqOffers.json()
+        const activeVehicles = respVehicles.filter(vehicle => vehicle.state === 1)
 
+        const reqOffers = await fetch(`${ENTRY_API_URL}api/vehicules/`)
+        const respOffers = await reqOffers.json()
         console.log(respOffers)
 
         const resultsOffers = respOffers.filter((obj) => {
             return activeVehicles.some((obj2) => {
+                // compare and get only active offre
                 return obj.idVehicule === obj2.idVehicule && obj.stateOffre === 1;
             });
         });
@@ -74,7 +73,16 @@ const BackOfficeAdminVehicles = () => {
                         VehiclesWithoutOffer.map(
                             element =>
                                 <ContainerListVehicles key={element.idVehicule}>
-                                    <BoxCar  description={element.description} marque={element.marque} id={element.idVehicule} image={element.image} plaque={element.plaque} modele={element.modele} msg="Ajouter à la location" VehiclesWithoutOffer={VehiclesWithoutOffer}  setVehiclesWithoutOffer={setVehiclesWithoutOffer}/>
+                                    <BoxCar
+                                        description={element.description}
+                                        marque={element.marque}
+                                        id={element.idVehicule}
+                                        image={element.image}
+                                        plaque={element.plaque}
+                                        modele={element.modele}
+                                        msg="Ajouter à la location"
+                                        VehiclesWithoutOffer={VehiclesWithoutOffer}
+                                        setVehiclesWithoutOffer={setVehiclesWithoutOffer}/>
                                 </ContainerListVehicles>
                         )
                     }

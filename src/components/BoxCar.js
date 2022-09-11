@@ -88,7 +88,7 @@ const BoxCar = ({image, marque, modele,id, description, plaque, agence, msg, Veh
         <ContainerBoxCar>
             <SecondContainerBoxCar>
                 <ContainerImg>
-                    <img src={image ? image : "https://www.h2-mobile.fr/img/post-h2/aide-achat-voiture-hydrogene_280219.jpg"} style={{ width : "100%", height : "100%"}} onError={({currentTarget}) => {
+                    <img src={image ? image : "https://www.h2-mobile.fr/img/post-h2/aide-achat-voiture-hydrogene_280219.jpg"} alt="current voiture" style={{ width : "100%", height : "100%"}} onError={({currentTarget}) => {
                         currentTarget.onerror= null;
                         currentTarget.src= DefaultImg
                     }}/>

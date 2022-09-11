@@ -12,13 +12,14 @@ export const MessageStateClientProvider = ({children}) => {
     const validateMessage = (msg, state = "ok", goTo = -1, timer) => {
 
         Swal.close()
+        const currTimer = timer ? timer : undefined
 
         if (state === "ok") {
             Swal.fire({
                 title: "OK!",
                 text: msg,
                 icon: "success",
-                timer : timer ? timer : undefined
+                timer : currTimer
             }).then(
                 () => {
                     goTo && goTo !== 0 && navigate(goTo)
@@ -29,7 +30,7 @@ export const MessageStateClientProvider = ({children}) => {
                 "title" : "INFORMATION",
                 text : msg,
                 icon : "info",
-                timer : timer ? timer : undefined
+                timer : currTimer
             }).then(
                 () => {
                     goTo && goTo !== 0 && navigate(goTo)
@@ -40,7 +41,7 @@ export const MessageStateClientProvider = ({children}) => {
                 title: "OOPS !",
                 text: msg,
                 icon: "error",
-                timer : timer ? timer : undefined
+                timer : currTimer
             }).then(
                 () => {
                     goTo && goTo !== 0 && navigate(goTo)

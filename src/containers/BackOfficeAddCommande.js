@@ -1,7 +1,6 @@
 import {ContainerInputMui} from "./MoreInfoCar";
 import {Input, InputLabel, MenuItem, Select} from "@mui/material";
 import {ENTRY_API_URL, styleForSelectMui, styleInputMui} from "../utils";
-import listVehicles from '../datatest/datalistlocation.json'
 import {useEffect, useState} from "react";
 import DefaultImg from "../img/aide-achat-voiture-hydrogene_280219.jpg";
 import FullCalendar from '@fullcalendar/react' // must go before plugins
@@ -121,13 +120,6 @@ const BackOfficeAddCommande = () => {
     const {currID} = useParams()
 
 
-    useEffect(() => {
-        const [InfoVehicleSelected] = listVehicles.filter(vehicle => vehicle.id === selectedCar)
-        if (InfoVehicleSelected) {
-            setAgence(InfoVehicleSelected.agence)
-        }
-    }, [selectedDate])
-
     const handleSelectDate = (infos) => {
 
         const dateLessOneDays = infos.end.setDate(infos.end.getDate())
@@ -166,7 +158,7 @@ const BackOfficeAddCommande = () => {
         });
         const result = await reqPostCommande.json()
         if (result.idContrat) {
-            validateMessage("Commande bien enregistrez !", "ok", -1)
+            validateMessage("Commande bien enregistrer !", "ok", -1)
         } else {
             validateMessage("Une erreur est survenue", "pas ok", 0)
         }

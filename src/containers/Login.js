@@ -35,7 +35,7 @@ const Login = () => {
         if (jsonData.message){
             validateMessage("Mot de passe et/ou utilisateur incorrect", "pas ok", 0)
         } else {
-            validateMessage("Vous êtes bien connectés", "ok", lastNavigate ? lastNavigate : "/")
+            validateMessage("Vous êtes bien connectés", "ok", "/")
             login(data)
         }
 

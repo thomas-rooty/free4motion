@@ -56,7 +56,7 @@ const BackOfficeEditCommande = () => {
         })
         const result = await req.json()
         if (result.success) {
-            validateMessage("Modification bien enregistrez", "ok", -1)
+            validateMessage("Modification bien enregistrer", "ok", -1)
         } else {
             validateMessage("Erreur", "pas ok", 0)
         }

@@ -5,9 +5,11 @@ import {Input, InputLabel, MenuItem, Select} from "@mui/material";
 import {ENTRY_API_URL, styleForSelectMui, styleInputMui} from "../utils";
 import {ButtonReservation} from "../components";
 import {LabelCustom} from "./Register";
+import {useMessageStateClient} from "../context/MessageStateClient";
 
 const BackOfficeEditCommande = () => {
 
+    const {validateMessage} = useMessageStateClient()
     const {currID} = useParams();
 
     const newDate = new Date()
@@ -33,6 +35,33 @@ const BackOfficeEditCommande = () => {
     const [kmParcouru, setKmParcouru] = useState(0)
     const [dateRendu, setDateRendu] = useState(newDate.toISOString().split("T")[0])
 
+    const handleSubmit = async () => {
+
+
+        const data = {
+            state : selectType
+        }
+        if (selectType === 2) {
+            data['kmParcouru'] = kmParcouru
+            data ["dateRendu"] = dateRendu
+        }
+
+        const req = await fetch(`${ENTRY_API_URL}api/state/contrat/${currID}`,{
+            method : "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        const result = await req.json()
+        if (result.success) {
+            validateMessage("Modification bien enregistrez", "ok", -1)
+        } else {
+            validateMessage("Erreur", "pas ok", 0)
+        }
+    }
+
     return(
         <div style={{width : "80%", marginLeft : "auto", marginRight : "auto"}}>
 
@@ -55,9 +84,9 @@ const BackOfficeEditCommande = () => {
 
                 {
                     selectType === 0
-                    ? <div style={{width : "40%", marginLeft : "auto", marginRight : "auto"}}><ButtonReservation msg="Annuler la commande" height={45}/></div>
+                    ? <div style={{width : "40%", marginLeft : "auto", marginRight : "auto"}} onClick={() => handleSubmit()}><ButtonReservation msg="Annuler la commande" height={45}/></div>
                         : selectType === 1
-                            ? <div style={{width : "40%", marginLeft : "auto", marginRight : "auto"}}><ButtonReservation msg="Modifier la commande" height={45}/></div>
+                            ? <div style={{width : "40%", marginLeft : "auto", marginRight : "auto"}} onClick={() => handleSubmit()}><ButtonReservation msg="Modifier la commande" height={45}/></div>
                                 : selectType === 2
                             &&
                             <div>
@@ -70,7 +99,7 @@ const BackOfficeEditCommande = () => {
                                     <LabelCustom htmlFor="form-input-date">Date de rendu du véhicule</LabelCustom>
                                     <Input id="form-input-date" fullWidth type="date" sx={styleInputMui} value={dateRendu} onChange={(e) => setDateRendu(e.target.value)}/>
                                 </ContainerInputMui>
-                                <div style={{width : "40%", marginLeft : "auto", marginRight : "auto", marginTop : "20px"}}><ButtonReservation msg="valider le rendu véhicule" height={45}/></div>
+                                <div onClick={() => handleSubmit()} style={{width : "40%", marginLeft : "auto", marginRight : "auto", marginTop : "20px"}}><ButtonReservation msg="valider le rendu véhicule" height={45}/></div>
                             </div>
                 }
 

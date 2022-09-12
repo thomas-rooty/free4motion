@@ -150,7 +150,7 @@ const Facture = type => {
         }
 
         const data = document.getElementById("facture");
-        await html2canvas(data, {scrollY : -window.scrollY, scale : 1, windowWidth : 1648, windowHeight : 900, width : 1200, height : 1200}).then(
+        await html2canvas(data, {scrollY : -window.scrollY, scale : 3, windowWidth : 1648, windowHeight : 900, width : 1200, height : 1200}).then(
             canvas => {
                 const contentDataURL = canvas.toDataURL('image/png', 1.0)
 

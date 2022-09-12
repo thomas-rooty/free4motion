@@ -4,7 +4,7 @@ import {STRIPE_PUBLIC_KEY} from "../../utils";
 import {CheckOutForm} from "./index";
 const stripeTestPromise = loadStripe(STRIPE_PUBLIC_KEY);
 
-const StripeContainer = ({montant, idContrat, cbSelect}) => {
+const StripeContainer = ({montant, idContrat, cbSelect, dataPaymentIntent}) => {
 
 
 
@@ -14,7 +14,7 @@ const StripeContainer = ({montant, idContrat, cbSelect}) => {
         <div>
 
             <Elements stripe={stripeTestPromise} >
-                <CheckOutForm montant={montant} idContrat={idContrat} cbSelect={cbSelect}/>
+                <CheckOutForm montant={montant} idContrat={idContrat} dataPaymentIntent={dataPaymentIntent} cbSelect={cbSelect}/>
             </Elements>
         </div>
     )

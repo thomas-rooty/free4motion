@@ -27,7 +27,7 @@ const H5 = styled.h5`
 `;
 
 const ContainerLinkButton = styled.div`
-    display: flex;
+  display: flex;
   justify-content: center;
   text-decoration: none;
   align-items: center;
@@ -51,7 +51,7 @@ const SecondContainerBoxCar = styled.div`
   padding-bottom: 10px;
 `;
 
-const BoxCar = ({image, marque, modele,id, description, plaque, agence, msg, VehiclesWithOffer, VehiclesWithoutOffer,setVehiclesWithoutOffer, setVehiclesWithOffer}) => {
+const BoxCar = ({image, marque, modele,id, description, plaque, agence, msg, VehiclesWithOffer, VehiclesWithoutOffer,setVehiclesWithoutOffer, setVehiclesWithOffer, noButton}) => {
 
     const {validateMessage} = useMessageStateClient()
 
@@ -88,7 +88,7 @@ const BoxCar = ({image, marque, modele,id, description, plaque, agence, msg, Veh
         <ContainerBoxCar>
             <SecondContainerBoxCar>
                 <ContainerImg>
-                    <img src={image ? image : "https://www.h2-mobile.fr/img/post-h2/aide-achat-voiture-hydrogene_280219.jpg"} style={{ width : "100%", height : "100%"}} onError={({currentTarget}) => {
+                    <img src={image ? image : "https://www.h2-mobile.fr/img/post-h2/aide-achat-voiture-hydrogene_280219.jpg"} alt="current voiture" style={{ width : "100%", height : "100%"}} onError={({currentTarget}) => {
                         currentTarget.onerror= null;
                         currentTarget.src= DefaultImg
                     }}/>
@@ -113,12 +113,17 @@ const BoxCar = ({image, marque, modele,id, description, plaque, agence, msg, Veh
                                 </ContainerLinkButton>
                                 :
                                 <ContainerLinkButton>
-                                    <Link to={`/free_admin/add_location/${id}`} state={{id, image}} >
-                                            <ButtonReservation msg={msg}/>
-                                    </Link>
-                                    <ImgRemove src={RemoveImg} onClick={() => removeCurrentVehicle("add")}/>
+                                    {
+                                        !noButton &&
+                                        <>
+                                            <Link to={`/free_admin/add_location/${id}`} state={{id, image}} >
+                                                <ButtonReservation msg={msg}/>
+                                            </Link>
+                                            <ImgRemove src={RemoveImg} onClick={() => removeCurrentVehicle("add")}/>
+                                        </>
+                                    }
                                 </ContainerLinkButton>
-                            : <Link to={`/shop-car/${id}`} state={{image,marque,modele,id,description,agence}}><ButtonReservation/></Link>
+                            : !noButton && <Link to={`/shop-car/${id}`} state={{image,marque,modele,id,description,agence}}><ButtonReservation/></Link>
                     }
 
                 </ContainerButton>

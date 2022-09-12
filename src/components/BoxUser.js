@@ -36,6 +36,7 @@ const ContainerUserBox = styled.div`
   & .child {
     margin-top: 10px;
     width: 150px;
+    overflow: hidden;
   }
   & img {
   width: 48px;
@@ -66,7 +67,7 @@ const BoxUser = ({data, handleChange, index}) => {
     const [showCommands, setUserShowCommands] = useState(false)
     const {validateMessage} = useMessageStateClient()
 
-    const {idPersonne, nom, prenom, naissance,addresse,numeroPermis} = data
+    const {idPersonne, nom, prenom, naissance,addresse,numeroPermis, numeroTel} = data
 
     const [contratsPpl, setContratsPpl] = useState([])
 
@@ -93,6 +94,9 @@ const BoxUser = ({data, handleChange, index}) => {
     const handleEditUser = async () => {
 
         const dataToPost = {...data}
+        dataToPost["naissance"] = data.naissance.split('T')[0]
+
+
         console.log(dataToPost)
 
 
@@ -104,8 +108,12 @@ const BoxUser = ({data, handleChange, index}) => {
             },
             body: JSON.stringify(dataToPost)
         })
-        const result = await req.text()
-        console.log(result)
+        const result = await req.json()
+        if (result.email){
+            validateMessage("Modification bien enregistrer", "ok", 0)
+        } else {
+            validateMessage("Erreur", "pas ok", 0)
+        }
 
     }
 
@@ -148,12 +156,17 @@ const BoxUser = ({data, handleChange, index}) => {
                                         <H4>Adresse : </H4>
                                         <h2>{addresse}</h2>
                                     </div>
+
+                                    <div className="child">
+                                        <H4>Tel : </H4>
+                                        <h2>{numeroTel}</h2>
+                                    </div>
                                     <div className="child">
                                         <H4>Numéro de permis :</H4>
                                         <h2>{numeroPermis}</h2>
                                     </div>
                                 </ContainerFlex>
-                                <img src={EditImg} onClick={() => {setUserWantEdit(true)}} style={{width : "32px"}}/>
+                                <img src={EditImg} alt="edit" onClick={() => {setUserWantEdit(true)}} style={{width : "32px"}}/>
                                 <ContainerImg rotate={showCommands} onClick={() => {setUserShowCommands(prevState => prevState === false)}}>
                                     <img src={ChevronDown}/>
                                 </ContainerImg>
@@ -174,6 +187,9 @@ const BoxUser = ({data, handleChange, index}) => {
                                 </ContainerInputMui>
                                 <ContainerInputMui width={15}>
                                     <Input id="form-input-serialNumber" fullWidth type="text" value={addresse} sx={styleInputMui} onChange={(e) => handleChange(index, "addresse", e.target.value)}/>
+                                </ContainerInputMui>
+                                <ContainerInputMui width={15}>
+                                    <Input id="form-input-serialNumber" fullWidth type="number" value={numeroTel} sx={styleInputMui} onChange={(e) => handleChange(index, "numeroTel", e.target.value)}/>
                                 </ContainerInputMui>
                                 <ContainerInputMui width={15}>
                                     <Input id="form-input-serialNumber" fullWidth type="number" value={numeroPermis} sx={styleInputMui} onChange={(e) => handleChange(index, "numeroPermis", e.target.value)}/>
@@ -218,3 +234,4 @@ const BoxUser = ({data, handleChange, index}) => {
 
 }
 export default BoxUser
+

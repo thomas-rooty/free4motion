@@ -147,7 +147,7 @@ const BackOfficeAddCar = () => {
                     </ContainerInputMui>
                 </div>
                 <div style={{width : "80%", marginTop : "32px", marginLeft : "auto", marginRight : "auto"}} onClick={() => handleSubmitAddCar()}>
-                    <ButtonReservation height={40} msg="Envoyer"/>
+                    <ButtonReservation height={40} msg="Ajouter la voiture"/>
                 </div>
             </StandarContainers>
 

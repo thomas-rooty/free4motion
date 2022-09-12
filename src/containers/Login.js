@@ -57,7 +57,7 @@ const Login = () => {
                 </div>
 
             </div>
-            <div style={{textAlign : "center", marginTop : "10px", textDecoration : "underline",}}><Link to="/register"style={{ color : "#747474"}}><h5>Pas de compte ? Inscrivez-vous</h5></Link></div>
+            <div style={{textAlign : "center", marginTop : "10px", textDecoration : "underline"}}><Link to="/register" style={{ color : "#747474"}}><h5>Pas de compte ? Inscrivez-vous</h5></Link></div>
 
         </StandarContainers>
     )

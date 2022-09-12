@@ -3,6 +3,8 @@ import {useMessageStateClient} from "../context/MessageStateClient";
 import {useEffect} from "react";
 import {useContextAuth} from "../context/ContextAuth";
 
+
+// Dict for message to showing to the client
 const msg = {
     "adminNotAccess" : "Connectez sur votre compte personnel pour continuer",
     "adminRoleNeeded" : "Vous devez disposez des droits pour accéder à cette page"
@@ -11,10 +13,10 @@ const msg = {
 
 const PrivateRoutes = ({roleNeeded, msgRedirect}) => {
 
+    // Get role of the token
     const {role} = useContextAuth()
-    console.log(role)
 
-
+    // If role in roleNeeded Redirect to next url match, else redirect client to login with message
     const access = roleNeeded.indexOf(role) > -1
 
     return (

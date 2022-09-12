@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import {ENTRY_API_URL, LOGIN, LOGOUT, styleInputMui} from "../utils";
+import {useState} from "react";
+import {ENTRY_API_URL, styleInputMui} from "../utils";
 import {Input} from "@mui/material";
 import {StandarContainers} from "./Containers";
 import {ButtonReservation} from "../components";

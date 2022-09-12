@@ -7,13 +7,20 @@ const ContextAuth = createContext()
 export const ContextAuthProvider = ({children}) => {
 
 
+    /*
+
+        lastNavigate -> Used when anonyme navigate to reservation of vehicle, save the url in lastNavigate to redirect him after login
+        firstReloadDone -> State used for wait info and the role of user after a refresh of the application
+        role -> determinate the role of user : 0 for anonyme, 1 for user, 2 for admin
+
+     */
     const [lastNavigate, setLastNavigate] = useState(false)
     const [firstReloadDone, setFirstReloadDone] = useState(false)
     const [role, setRole] = useState(undefined)
 
 
 
-    // Récupère le role de l'utilisateur, firstReload permet en cas de refresh de la page d'attendre que le role de l'utilisateur soit récupérer avant de vérifier l'accès
+    // get and set role of user by token saved in localstorage
     const fetchRoleByToken = async (token) => {
 
         if (token) {
@@ -35,6 +42,7 @@ export const ContextAuthProvider = ({children}) => {
     }
 
 
+    // When component is created or refreshed fetch api for get information
     useEffect(() => {
 
         fetchRoleByToken(localStorage.getItem("token")).catch(() => setRole(0))
@@ -49,6 +57,8 @@ export const ContextAuthProvider = ({children}) => {
         localStorage.setItem("token" , "")
         fetchRoleByToken("")
     }
+
+    // Used from other composants for get information about token
     const getIdCurrentPpl = async () => {
         const token = localStorage.getItem("token")
         const req = await fetch(`${ENTRY_API_URL}api/user?token=${token}`)

@@ -23,19 +23,18 @@ const BackOfficeAdminVehicles = () => {
 
     const [VehiclesWithoutOffer, setVehiclesWithoutOffer] = useState([])
     const [VehiclesWithOffer, setVehiclesWithOffer] = useState([])
+    const [vehiclesUnderCommmandActive, setVehiclesUnderCommandActive] = useState([])
 
     const reqVehicles = async () => {
 
         const reqVehicles = await fetch(`${ENTRY_API_URL}api/vehicules/all`)
         const respVehicles = await reqVehicles.json()
-        console.log(respVehicles)
 
 
         const activeVehicles = respVehicles.filter(vehicle => vehicle.state === 1)
 
         const reqOffers = await fetch(`${ENTRY_API_URL}api/vehicules/`)
         const respOffers = await reqOffers.json()
-        console.log(respOffers)
 
         const resultsOffers = respOffers.filter((obj) => {
             return activeVehicles.some((obj2) => {
@@ -53,8 +52,16 @@ const BackOfficeAdminVehicles = () => {
         setVehiclesWithOffer(resultsOffers)
     }
 
+    const reqGetVehiclesUnderLocation = async () => {
+        const req = await fetch(`${ENTRY_API_URL}api/enCours/vehicules`)
+        const result = await req.json()
+        setVehiclesUnderCommandActive(result)
+    }
+
     useEffect(() => {
         reqVehicles()
+        reqGetVehiclesUnderLocation()
+
     }, [])
 
     return(
@@ -100,6 +107,20 @@ const BackOfficeAdminVehicles = () => {
                         )
                     }
                 </div>
+                <StandarContainers>
+                    <H2>Les véhicules actuellement loué</H2>
+                </StandarContainers>
+                <div style={{display : "flex", justifyContent : "flex-start", flexFlow : "row wrap"}}>
+                    {
+                        vehiclesUnderCommmandActive.length > 0 && vehiclesUnderCommmandActive.map(
+                            element =>
+                                <ContainerListVehicles key={element.idVehicule}>
+                                    <BoxCar description={element.description} marque={element.marque} id={element.idVehicule} image={element.image} plaque={element.plaque} modele={element.modele} noButton={true} msg="Voire la commande" VehiclesWithOffer={VehiclesWithOffer} setVehiclesWithOffer={setVehiclesWithOffer}/>
+                                </ContainerListVehicles>
+                        )
+                    }
+                </div>
+
             </div>
 
 

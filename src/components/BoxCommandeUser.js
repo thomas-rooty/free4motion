@@ -167,7 +167,10 @@ const BoxCommandeUser = ({dataContrat}) => {
                             <div style={{display : "flex"}}><h2>{montantPaye ? montantPaye : 0} €</h2><h5 style={{marginLeft : "10px"}}> TTC</h5></div>
                         </div>
                     </div>
-                    <div style={{width : "20%", minWidth : "150px"}}><Link to="/facture" state={{"idPersonne": idPersonne, "idVehicule" : idVehicule, "idContrat" : idContrat}}><ButtonReservation msg="Voire ma facture"/></Link></div>
+                    {
+                        state === 2 && <div style={{width : "20%", minWidth : "150px"}}><Link to="/facture" state={{"idPersonne": idPersonne, "idVehicule" : idVehicule, "idContrat" : idContrat}}><ButtonReservation msg="Voire ma facture"/></Link></div>
+                    }
+
                 </div>
 
             }

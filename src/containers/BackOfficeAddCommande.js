@@ -46,7 +46,10 @@ const BackOfficeAddCommande = () => {
 
         const req = await fetch(`${ENTRY_API_URL}api/offre`)
         const data = await req.json()
-        setListOffreLocations(data)
+
+        const activeOffre = data.filter(x => x.stateOffre === 1 && x.stateVehicule === 1)
+
+        setListOffreLocations(activeOffre)
 
     }
 
@@ -54,6 +57,7 @@ const BackOfficeAddCommande = () => {
 
         const req = await fetch(`${ENTRY_API_URL}api/vehicules/${selectedCar}/offre`)
         const result = await req.json()
+
         setDataOffreLocation(result)
 
     }
@@ -108,7 +112,7 @@ const BackOfficeAddCommande = () => {
         }
     }, [selectedCar])
     useEffect(() => {
-        if (Object.keys(dataOffreLocation).length > 0) {
+        if (selectedCar && Object.keys(dataOffreLocation).length > 0) {
             getCommandeByIdOffre()
         }
     }, [dataOffreLocation])
@@ -169,7 +173,7 @@ const BackOfficeAddCommande = () => {
 
     }
 
-    const [goodVehicles] = listOffreLocations.filter(element => element.idVehicle === selectedCar)
+    const [goodVehicles] = listOffreLocations.filter(element => element.idVehicule === selectedCar)
 
     return (
 

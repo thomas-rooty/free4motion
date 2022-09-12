@@ -108,7 +108,7 @@ const BoxCommandeUser = ({dataContrat}) => {
                             <h2>{state === "0" ? "Annuler" : state === 1 ? "Validé" : state === 2 && "Fini"}</h2>
                     }
                     {
-                        state === 3 && <Link to={`/payment/${idContrat}`}><ButtonReservation msg="A payé" /></Link>
+                        state === 3 && <Link to={`/payment/${idContrat}`}><ButtonReservation msg="Paiement en attente"/> </Link>
                     }
                 </div>
                 <div className="child">
